@@ -1,12 +1,13 @@
 // Importaciones
 const prompt = require("prompt-sync")()
-const { addHeroe, editarHeroe, listarHeroes, borrarHeroe, salir } = require("./funciones.js");
+const { addHeroe, editarHeroe, listarHeroes, borrarHeroe, salir, limpiar } = require("./funciones.js");
 let inicio = true;
 
 /*
-Elección antes de entrar en el programa para elegir
-la forma de leer y guardar el programa
+Elección antes de entrar en el programa para
+elegir la forma de leer y guardar el programa
 */
+limpiar()
 console.log(`
     1. JSON
     2. .txt`
@@ -14,8 +15,8 @@ console.log(`
 const lector = Number(prompt('Lector por JSON o .txt: '));
 const bool = lector == 1 ? true : false;
 
-// Menú
-console.clear()
+// Menú interactivo
+limpiar()
 while (inicio == true) {
 
     console.log(`
@@ -32,9 +33,9 @@ while (inicio == true) {
 `);
 
     const seleccion = Number(prompt("Selecciona una opción del menú: "));
-    console.clear()
+    limpiar()
 
-    switch (seleccion) {
+    switch (seleccion) { // Según seleccion entra en el método correspondiente
         case 1: { addHeroe(bool) } break;
         case 2: { editarHeroe() } break;
         case 3: { listarHeroes(bool) } break;
@@ -44,7 +45,11 @@ while (inicio == true) {
             inicio = false
         } break;
         default: {
-            console.clear("Selecciona una opción válida")
+            console.log(`
+                ╔══════════════════════════════════╗
+ ═════════>     ║   Selecciona una opción válida   ║
+                ╚══════════════════════════════════╝
+            `)
         }
     }
 
