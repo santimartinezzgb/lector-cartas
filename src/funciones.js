@@ -1,12 +1,13 @@
 const Heroe = require("./clases.js");
 const fs = require('fs')
 const prompt = require('prompt-sync')()
-let datos = JSON.parse(fs.readFileSync('./databases/datos.json'));
+let datosJSON = JSON.parse(fs.readFileSync('./databases/datos.json'));
+let datosTxt = fs.readFileSync('./databases/datos.txt', 'utf8').split('\n').filter(line => line.trim());
 
 
-function addHeroe() {
+function addHeroe(bool) {
 
-    const nombre = prompt("Introduce el nombre del héroe: ");
+    const nombre = prompt("Introduce el nombre del héroe: ").toUpperCase();
     const superpoder = prompt(`Introduce el superpoder de ${nombre}: `)
     const planeta = prompt(`De que planeta viene ${nombre}: `)
     const fuerza = Number(prompt(`Indroduce su fuerza (1-99): `))
@@ -23,16 +24,32 @@ function addHeroe() {
     }
     let nuevoHeroe = new Heroe(nombre, superpoder, planeta, fuerza, vida, defensa)
 
-    datos.push(nuevoHeroe);
+    if (bool == true) {
+        datosJSON.push(nuevoHeroe);
 
-    fs.writeFileSync('./databases/datos.json', JSON.stringify(datos, null, 2));
-    console.clear()
-    console.log(`${nuevoHeroe.nombre} añadido a la lista`)
+        fs.writeFileSync('./databases/datos.json', JSON.stringify(datos, null, 2));
+        console.clear()
+        console.log(`${nuevoHeroe.nombre} añadido a la lista`)
+    } else {
+        const nuevoHeroeFormateadoTxt = [
+            "Héroe: " + nuevoHeroe.nombre,
+            "\nSuperpoder: " + nuevoHeroe.superpoder,
+            "\nPlaneta: " + nuevoHeroe.planeta,
+            "\nFuerza: " + nuevoHeroe.fuerza,
+            "\nVida: " + nuevoHeroe.vida,
+            "\nDefensa: " + nuevoHeroe.defensa,
+            "\n-------------------------------------------"
+        ]
+        datosTxt.push(nuevoHeroeFormateadoTxt);
+
+        fs.writeFileSync('./databases/datos.txt', datosTxt.join('\n'));
+    }
 }
 
-const editarHeroe = () => {
+const editarHeroe = (bool) => {
+
     console.log("HÉROES")
-    datos.forEach((heroe, index) => {
+    datosJSON.forEach((heroe, index) => {
         console.log(`${index + 1}. ${heroe.nombre}`)
     });
     const seleccionHeroe = Number(prompt("Selecciona un héroe para editar: "));
@@ -62,33 +79,44 @@ const editarHeroe = () => {
     }
     console.clear()
     console.log("Héroe actualizado con éxito")
-}
-
-const listarHeroes = () => {
-    console.log("HÉROES")
-    datos.forEach((heroe, index) => {
-        console.log(`${index + 1}. ${heroe.nombre}`)
-    });
-
-    console.log('HÉROES FUERTES: ')
-    datos.forEach((heroe, index) => {
-        (heroe.fuerza > 50) ? console.log(`${index + 1}. ${heroe.nombre} tiene fuerza ${heroe.fuerza}`) : "";
-    });
 
 }
-const borrarHeroe = () => {
-    console.log("HÉROES")
-    datos.forEach((heroe, index) => {
-        console.log(`${index + 1}. ${heroe.nombre}`)
-    });
-    const seleccionHeroe = Number(prompt("Selecciona un héroe para eliminar: "));
-    const heroeEliminar = datos[seleccionHeroe - 1]
-    const nombreDelEliminado = heroeEliminar.nombre
 
-    datos = datos.filter(heroe => heroe.nombre !== heroeEliminar.nombre)
+const listarHeroes = (bool) => {
+    if (bool == true) {
+        console.log("HÉROES")
+        datosJSON.forEach((heroe, index) => {
+            console.log(`${index + 1}. ${heroe.nombre}`)
+        });
 
-    fs.writeFileSync('./databases/datos.json', JSON.stringify(datos, null, 2));
-    console.log(`${nombreDelEliminado} ha sido eliminado`)
+        console.log('HÉROES FUERTES: ')
+        datosJSON.forEach((heroe, index) => {
+            (heroe.fuerza > 50) ? console.log(`${index + 1}. ${heroe.nombre} tiene fuerza ${heroe.fuerza}`) : "";
+        });
+    } else {
+
+    }
+
+}
+const borrarHeroe = (bool) => {
+
+    if (bool == true) {
+        console.log("HÉROES")
+        datosJSON.forEach((heroe, index) => {
+            console.log(`${index + 1}. ${heroe.nombre}`)
+        });
+        const seleccionHeroe = Number(prompt("Selecciona un héroe para eliminar: "));
+        const heroeEliminar = datos[seleccionHeroe - 1]
+        const nombreDelEliminado = heroeEliminar.nombre
+
+        datos = datosJSON.filter(heroe => heroe.nombre !== heroeEliminar.nombre)
+
+        fs.writeFileSync('./databases/datos.json', JSON.stringify(datos, null, 2));
+        console.log(`${nombreDelEliminado} ha sido eliminado`)
+
+    } else {
+
+    }
 }
 
 

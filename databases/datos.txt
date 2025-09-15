@@ -1,0 +1,14 @@
+Héroe: superman,
+Superpoder: vuela,
+Planeta: kripton,
+Fuerza: 99,
+Vida: 99,
+Defensa: 99,
+-------------------------------------------
+Héroe: batman,
+Superpoder: rico,
+Planeta: tierra,
+Fuerza: 1,
+Vida: 1,
+Defensa: 1,
+-------------------------------------------
