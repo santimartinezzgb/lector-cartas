@@ -2,6 +2,10 @@
 const Heroe = require("./clases.js");
 const fs = require('fs')
 const prompt = require('prompt-sync')()
+const mongoose = require('mongoose')
+require('dotenv').config();
+const usuarioMongo = process.env.MONGO_CLUSTER_NAME;
+const password = process.env.MONGO_CLUSTER_PASSWORD;
 
 // Lecturas de bases de datos JSON y txt
 let datosJSON = JSON.parse(fs.readFileSync('./databases/datos.json'));
@@ -11,31 +15,55 @@ let datosTxt = fs.readFileSync('./databases/datos.txt', 'utf8').split('\n').filt
 let limpiar = () => { console.clear() }
 
 let atributo = (atr) => {
-
     let puntuacion = Number(prompt(`Indroduce su ${atr} (1-99): `))
-
     while (puntuacion > 99 || puntuacion < 1 || isNaN(puntuacion) == true) {
         puntuacion = Number(prompt(`Indroduce puntuación válida (1-99): `))
     }
-
     return puntuacion
 }
 
 
+let database = "universo"
+let coleccion = "superheroes"
+mongoose.connect(`mongodb+srv://${usuarioMongo}:${password}@cluster0.fgumghx.mongodb.net/${database}`)
+
+const heroeSchema = new mongoose.Schema(
+    {
+        nombre: String, superpoder: String, planeta: String,
+        fuerza: Number, vida: Number, defensa: Number
+    },
+    { versionKey: false });
+
+const heroeModelo = mongoose.model(coleccion, heroeSchema);
+
+
+
+
+
 
 // MÉTODOS PRINCIPALES
-const addHeroe = () => { // Tiene elección de formato (JSON/txt)
+const addHeroe = async () => { // Tiene elección de formato (JSON/txt)
 
     limpiar()
     const nombre = prompt("Introduce el nombre del héroe: ").toUpperCase();
     const superpoder = prompt(`Introduce el superpoder de ${nombre}: `)
     const planeta = prompt(`De que planeta viene ${nombre}: `)
 
-    const fuerza = atributo("fuerza")
-    const vida = atributo("vida")
-    const defensa = atributo("defensa")
+    const fuerza = atributo("fuerza");
+    const vida = atributo("vida");
+    const defensa = atributo("defensa");
 
-    let nuevoHeroe = new Heroe(nombre, superpoder, planeta, fuerza, vida, defensa)
+    let nuevoHeroe = new Heroe(nombre, superpoder, planeta, fuerza, vida, defensa);
+
+    // Se añade a mongo igualmente
+    heroeModelo.insertOne({
+        nombre: nombre,
+        superpoder: superpoder,
+        planeta: planeta,
+        fuerza: fuerza,
+        vida: vida,
+        defensa: defensa
+    })
 
     let formatoIntroduccionDeDatos = Number(prompt(`Guardar a ${nombre} en JSON(1) o en txt(0): `));
 

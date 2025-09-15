@@ -13,7 +13,9 @@
   "license": "ISC",
   "packageManager": "pnpm@10.16.1",
   "dependencies": {
+    "dotenv": "^17.2.2",
     "fs": "0.0.1-security",
+    "mongoose": "^8.18.1",
     "prompt-sync": "^4.2.0"
   }
 }
