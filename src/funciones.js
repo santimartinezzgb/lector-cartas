@@ -35,11 +35,38 @@ const editarHeroe = () => {
     datos.forEach((element, index) => {
         console.log(`${index + 1}. ${element.nombre}`)
     });
-    const seleccion = Number(prompt("Selecciona un héroe para editar: "));
-    const elegido = datos[seleccion - 1].nombre
-    console.log(elegido)
+    const seleccionHeroe = Number(prompt("Selecciona un héroe para editar: "));
+    const elegido = datos[seleccionHeroe - 1]
+
+    console.clear()
+    console.log(`
+        Atributos de ${elegido.nombre}:
+        1. nombre
+        2. superpoder
+        3. planeta
+        4. fuerza
+        5. vida
+        6. defensa
+        `)
+
+    const seleccionAtributo = Number(prompt("Selecciona atributo a editar: "))
+    switch (seleccionAtributo) {
+        case 1: elegido.nombre = prompt("Nuevo nombre: "); break;
+        case 2: elegido.superpoder = prompt("Nuevo superpoder: "); break;
+        case 3: elegido.planeta = prompt("Nuevo planeta: "); break;
+        case 4: elegido.fuerza = prompt("Nueva estadística de fuerza: "); break;
+        case 5: elegido.vida = prompt("Nuevo estadística de vida: "); break;
+        case 6: elegido.defensa = prompt("Nuevo estadística de defensa: "); break;
+    }
+    console.log("Héroe actualizado con éxito")
 }
 
+const listarHeroes = () => {
+    console.log("HÉROES")
+    datos.forEach((element, index) => {
+        console.log(`${index + 1}. ${element.nombre}`)
+    });
+}
 const borrarHeroe = () => {
 
 }
@@ -49,4 +76,4 @@ const salir = () => {
     process.exit()
 }
 
-module.exports = { addHeroe, editarHeroe, borrarHeroe, salir }
+module.exports = { addHeroe, editarHeroe, listarHeroes, borrarHeroe, salir }
