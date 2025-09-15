@@ -5,7 +5,7 @@ let datos = JSON.parse(fs.readFileSync('./databases/datos.json'));
 
 
 function addHeroe() {
-    console.log(datos[0])
+
     const nombre = prompt("Introduce el nombre del héroe: ");
     const superpoder = prompt(`Introduce el superpoder de ${nombre}: `)
     const planeta = prompt(`De que planeta viene ${nombre}: `)
@@ -40,13 +40,15 @@ const editarHeroe = () => {
 
     console.clear()
     console.log(`
-        Atributos de ${elegido.nombre}:
-        1. nombre
-        2. superpoder
-        3. planeta
-        4. fuerza
-        5. vida
-        6. defensa
+        ╔═════════════════════════════════╗
+        ║   Atributos de ${elegido.nombre}║
+        ║   1. nombre                     ║
+        ║   2. superpoder                 ║            
+        ║   3. planeta                    ║
+        ║   4. fuerza                     ║
+        ║   5. vida                       ║
+        ║   6. defensa                    ║
+        ╚═════════════════════════════════╝
         `)
 
     const seleccionAtributo = Number(prompt("Selecciona atributo a editar: "))
@@ -58,6 +60,7 @@ const editarHeroe = () => {
         case 5: elegido.vida = prompt("Nuevo estadística de vida: "); break;
         case 6: elegido.defensa = prompt("Nuevo estadística de defensa: "); break;
     }
+    console.clear()
     console.log("Héroe actualizado con éxito")
 }
 
@@ -74,12 +77,38 @@ const listarHeroes = () => {
 
 }
 const borrarHeroe = () => {
+    console.log("HÉROES")
+    datos.forEach((heroe, index) => {
+        console.log(`${index + 1}. ${heroe.nombre}`)
+    });
+    const seleccionHeroe = Number(prompt("Selecciona un héroe para eliminar: "));
+    const heroeEliminar = datos[seleccionHeroe - 1]
+    const nombreDelEliminado = heroeEliminar.nombre
 
+    datos = datos.filter(heroe => heroe.nombre !== heroeEliminar.nombre)
+
+    fs.writeFileSync('./databases/datos.json', JSON.stringify(datos, null, 2));
+    console.log(`${nombreDelEliminado} ha sido eliminado`)
 }
 
 
-const salir = () => {
-    process.exit()
+const salir = async () => {
+    console.clear()
+
+    console.log("Saliendo del programa en...")
+    setTimeout(() => {
+        console.log('... 3')
+    }, 1000)
+    setTimeout(() => {
+        console.log('... 2')
+    }, 2000)
+    setTimeout(() => {
+        console.log('... 1')
+    }, 3000)
+    setTimeout(() => {
+
+        process.exit()
+    }, 4000)
 }
 
 module.exports = { addHeroe, editarHeroe, listarHeroes, borrarHeroe, salir }
