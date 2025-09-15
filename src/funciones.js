@@ -32,8 +32,8 @@ function addHeroe() {
 
 const editarHeroe = () => {
     console.log("HÉROES")
-    datos.forEach((element, index) => {
-        console.log(`${index + 1}. ${element.nombre}`)
+    datos.forEach((heroe, index) => {
+        console.log(`${index + 1}. ${heroe.nombre}`)
     });
     const seleccionHeroe = Number(prompt("Selecciona un héroe para editar: "));
     const elegido = datos[seleccionHeroe - 1]
@@ -63,9 +63,15 @@ const editarHeroe = () => {
 
 const listarHeroes = () => {
     console.log("HÉROES")
-    datos.forEach((element, index) => {
-        console.log(`${index + 1}. ${element.nombre}`)
+    datos.forEach((heroe, index) => {
+        console.log(`${index + 1}. ${heroe.nombre}`)
     });
+
+    console.log('HÉROES FUERTES: ')
+    datos.forEach((heroe, index) => {
+        (heroe.fuerza > 50) ? console.log(`${index + 1}. ${heroe.nombre} tiene fuerza ${heroe.fuerza}`) : "";
+    });
+
 }
 const borrarHeroe = () => {
 
