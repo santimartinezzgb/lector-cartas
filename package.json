@@ -1,6 +1,6 @@
 {
   "name": "lector-cartas",
-  "type": "module",
+  "type": "commonjs",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -13,6 +13,7 @@
   "license": "ISC",
   "packageManager": "pnpm@10.16.1",
   "dependencies": {
+    "fs": "0.0.1-security",
     "prompt-sync": "^4.2.0"
   }
 }

@@ -1,0 +1,18 @@
+[
+  {
+    "nombre": "spidy",
+    "superpoder": "telas",
+    "planeta": "tierra",
+    "fuerza": 12,
+    "vida": 23,
+    "defensa": 34
+  },
+  {
+    "nombre": "batman",
+    "superpoder": "rico",
+    "planeta": "tierra",
+    "fuerza": 44,
+    "vida": 23,
+    "defensa": 12
+  }
+]
