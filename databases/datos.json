@@ -3,8 +3,8 @@
     "nombre": "caracolas",
     "superpoder": "smith",
     "planeta": "marte",
-    "fuerza": "99",
-    "vida": "12",
+    "fuerza": 10,
+    "vida": 77,
     "defensa": 55
   }
 ]

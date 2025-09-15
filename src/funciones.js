@@ -7,27 +7,26 @@ const prompt = require('prompt-sync')()
 let datosJSON = JSON.parse(fs.readFileSync('./databases/datos.json'));
 let datosTxt = fs.readFileSync('./databases/datos.txt', 'utf8').split('\n').filter(line => line.trim());
 
-// Funciones auxiliares
+// Métodos auxiliares
 let limpiar = () => { console.clear() }
+
 let atributo = (atr) => {
 
     let puntuacion = Number(prompt(`Indroduce su ${atr} (1-99): `))
-    while (puntuacion > 99 || puntuacion < 1 || isNaN(puntuacion) === true) {
+
+    while (puntuacion > 99 || puntuacion < 1 || isNaN(puntuacion) == true) {
         puntuacion = Number(prompt(`Indroduce puntuación válida (1-99): `))
-        return puntuacion
     }
+
     return puntuacion
 }
 
 
-function addHeroe(bool) {
 
-    /* Método para añadir nuevo héroe
-    * bool: según sea true o false,
-    * selecciona base de datos en:
-    * - JSON
-    * - txt
-    */
+// MÉTODOS PRINCIPALES
+const addHeroe = () => { // Tiene elección de formato (JSON/txt)
+
+    limpiar()
     const nombre = prompt("Introduce el nombre del héroe: ").toUpperCase();
     const superpoder = prompt(`Introduce el superpoder de ${nombre}: `)
     const planeta = prompt(`De que planeta viene ${nombre}: `)
@@ -38,14 +37,17 @@ function addHeroe(bool) {
 
     let nuevoHeroe = new Heroe(nombre, superpoder, planeta, fuerza, vida, defensa)
 
-    if (bool == true) { // Formato JSON
+    let formatoIntroduccionDeDatos = Number(prompt(`Guardar a ${nombre} en JSON(1) o en txt(0): `));
+
+    if (formatoIntroduccionDeDatos == 1) { // Formato JSON
         datosJSON.push(nuevoHeroe);
 
         fs.writeFileSync('./databases/datos.json', JSON.stringify(datosJSON, null, 2));
 
         limpiar()
 
-        console.log(`${nuevoHeroe.nombre} añadido a la lista`)
+        console.log(`${nuevoHeroe.nombre} añadido a la DB en JSON`)
+
     } else { // Formato txt
         const nuevoHeroeFormateadoTxt = [
             "Héroe: " + nuevoHeroe.nombre,
@@ -59,17 +61,23 @@ function addHeroe(bool) {
         datosTxt.push(nuevoHeroeFormateadoTxt);
 
         fs.writeFileSync('./databases/datos.txt', datosTxt.join('\n'));
+
+        limpiar()
+
+        console.log(`${nuevoHeroe.nombre} añadido a la DB en txt`)
     }
 }
 
-const editarHeroe = (bool) => {
+const editarHeroe = () => {
 
     limpiar()
 
     console.log("HÉROES")
+
     datosJSON.forEach((heroe, index) => {
         console.log(`${index + 1}. ${heroe.nombre}`)
     });
+
     const seleccionHeroe = Number(prompt("Selecciona un héroe para editar: "));
     const elegido = datos[seleccionHeroe - 1]
 
@@ -88,13 +96,15 @@ const editarHeroe = (bool) => {
         `)
 
     const seleccionAtributo = Number(prompt("Selecciona atributo a editar: "))
+
     switch (seleccionAtributo) {
+
         case 1: elegido.nombre = prompt("Nuevo nombre: "); break;
         case 2: elegido.superpoder = prompt("Nuevo superpoder: "); break;
         case 3: elegido.planeta = prompt("Nuevo planeta: "); break;
-        case 4: elegido.fuerza = prompt("Nueva estadística de fuerza: "); break;
-        case 5: elegido.vida = prompt("Nuevo estadística de vida: "); break;
-        case 6: elegido.defensa = prompt("Nuevo estadística de defensa: "); break;
+        case 4: elegido.fuerza = Number(prompt("Nueva estadística de fuerza: ")); break;
+        case 5: elegido.vida = Number(prompt("Nuevo estadística de vida: ")); break;
+        case 6: elegido.defensa = Number(prompt("Nuevo estadística de defensa: ")); break;
     }
 
     limpiar()
@@ -103,46 +113,59 @@ const editarHeroe = (bool) => {
 
 }
 
-const listarHeroes = (bool) => {
+const listarHeroes = () => { // Tiene elección de formato (JSON/txt)
 
     limpiar()
 
-    if (bool == true) {
+    let formatoIntroduccionDeDatos = Number(prompt(`Seleccion de formato: JSON(1) o txt(0): `));
+
+    if (formatoIntroduccionDeDatos == 1) {
+
         limpiar()
+
         console.log("HÉROES")
+
         datosJSON.forEach((heroe, index) => {
             console.log(`${index + 1}. ${heroe.nombre}`)
         });
 
     } else {
 
-    }
-
-}
-const borrarHeroe = (bool) => {
-
-    limpiar()
-
-    if (bool == true) {
-
         limpiar()
 
         console.log("HÉROES")
+        console.log(datosTxt)
+    }
+
+}
+const borrarHeroe = () => {
+
+    limpiar();
+
+    if (datosJSON.length > 0) {
+
+        console.log("HÉROES")
+
         datosJSON.forEach((heroe, index) => {
             console.log(`${index + 1}. ${heroe.nombre}`)
         });
+
         const seleccionHeroe = Number(prompt("Selecciona un héroe para eliminar: "));
-        const heroeEliminar = datos[seleccionHeroe - 1]
+        const heroeEliminar = datosJSON[seleccionHeroe - 1]
         const nombreDelEliminado = heroeEliminar.nombre
 
-        datos = datosJSON.filter(heroe => heroe.nombre !== heroeEliminar.nombre)
+        datosJSON = datosJSON.filter(heroe => heroe.nombre !== heroeEliminar.nombre)
 
-        fs.writeFileSync('./databases/datos.json', JSON.stringify(datos, null, 2));
+        fs.writeFileSync('./databases/datos.json', JSON.stringify(datosJSON, null, 2));
+
         console.log(`${nombreDelEliminado} ha sido eliminado`)
 
     } else {
 
+        console.log("No hay héroes en la lista")
+
     }
+
 }
 
 
@@ -151,15 +174,19 @@ const salir = async () => {
     limpiar()
 
     console.log("Saliendo del programa en...")
+
     setTimeout(() => {
         console.log('... 3')
     }, 1000)
+
     setTimeout(() => {
         console.log('... 2')
     }, 2000)
+
     setTimeout(() => {
         console.log('... 1')
     }, 3000)
+
     setTimeout(() => {
 
         process.exit()
