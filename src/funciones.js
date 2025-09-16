@@ -24,7 +24,16 @@ let atributo = (atr) => {
 const addHeroe = () => { // Tiene elección de formato (JSON/txt)
 
     limpiar()
-    const nombre = prompt('Introduce el nombre del héroe: ').toUpperCase();
+    let nombre = prompt('Introduce el nombre del héroe: ').toUpperCase();
+
+    for (let i = 0; i < datosJSON.length; i++) {
+        while (datosJSON[i].nombre === nombre) {
+            limpiar()
+            console.log("Nombre ocupado")
+            nombre = prompt('Introduce el nombre del héroe: ').toUpperCase();
+        }
+    }
+
     const superpoder = prompt(`Introduce el superpoder de ${nombre}: `)
     const planeta = prompt(`De que planeta viene ${nombre}: `)
 
