@@ -2,10 +2,7 @@
 const Heroe = require("./clases.js");
 const fs = require('fs')
 const prompt = require('prompt-sync')()
-const mongoose = require('mongoose')
-require('dotenv').config();
-const usuarioMongo = process.env.MONGO_CLUSTER_NAME;
-const password = process.env.MONGO_CLUSTER_PASSWORD;
+const { heroeModelo } = require("./api-mongo.js")
 
 // Lecturas de bases de datos JSON y txt
 let datosJSON = JSON.parse(fs.readFileSync('./databases/datos.json'));
@@ -23,25 +20,8 @@ let atributo = (atr) => {
 }
 
 
-// Conexión con mongo
-let database = "universo"
-let coleccion = "superheroes"
-mongoose.connect(`mongodb+srv://${usuarioMongo}:${password}@cluster0.fgumghx.mongodb.net/${database}`)
-
-const heroeSchema = new mongoose.Schema(
-    {
-        nombre: String, superpoder: String, planeta: String,
-        fuerza: Number, vida: Number, defensa: Number
-    },
-    { versionKey: false });
-
-const heroeModelo = mongoose.model(coleccion, heroeSchema);
-
-
-
-
 // MÉTODOS PRINCIPALES
-const addHeroe = async () => { // Tiene elección de formato (JSON/txt)
+const addHeroe = () => { // Tiene elección de formato (JSON/txt)
 
     limpiar()
     const nombre = prompt("Introduce el nombre del héroe: ").toUpperCase();
@@ -64,35 +44,44 @@ const addHeroe = async () => { // Tiene elección de formato (JSON/txt)
         defensa: defensa
     })
 
-    let formatoIntroduccionDeDatos = Number(prompt(`Guardar a ${nombre} en JSON(1) o en txt(0): `));
+    limpiar()
+    console.log(`${nombre} ha sido creado y enviado directamente a la base de datos en Mongo`)
+    let guardadoAdicional = Number(prompt(`Guardar adicionalmente en otro formato? (s/n): `));
 
-    if (formatoIntroduccionDeDatos == 1) { // Formato JSON
-        datosJSON.push(nuevoHeroe);
+    if (guardadoAdicional == "s") {
+        let formatoIntroduccionDeDatos = Number(prompt('Guardar en JSON(1) o en txt(0): '));
+        if (formatoIntroduccionDeDatos == 1) { // Formato JSON
+            datosJSON.push(nuevoHeroe);
 
-        fs.writeFileSync('./databases/datos.json', JSON.stringify(datosJSON, null, 2));
+            fs.writeFileSync('./databases/datos.json', JSON.stringify(datosJSON, null, 2));
 
+            limpiar()
+
+            console.log(`${nuevoHeroe.nombre} añadido a la DB en JSON`)
+
+        } else { // Formato txt
+            const nuevoHeroeFormateadoTxt = [
+                "Héroe: " + nuevoHeroe.nombre,
+                "\nSuperpoder: " + nuevoHeroe.superpoder,
+                "\nPlaneta: " + nuevoHeroe.planeta,
+                "\nFuerza: " + nuevoHeroe.fuerza,
+                "\nVida: " + nuevoHeroe.vida,
+                "\nDefensa: " + nuevoHeroe.defensa,
+                "\n-------------------------------------------"
+            ]
+            datosTxt.push(nuevoHeroeFormateadoTxt);
+
+            fs.writeFileSync('./databases/datos.txt', datosTxt.join('\n'));
+
+            limpiar()
+
+            console.log(`${nuevoHeroe.nombre} añadido a la DB en txt`)
+        }
+    } else {
         limpiar()
-
-        console.log(`${nuevoHeroe.nombre} añadido a la DB en JSON`)
-
-    } else { // Formato txt
-        const nuevoHeroeFormateadoTxt = [
-            "Héroe: " + nuevoHeroe.nombre,
-            "\nSuperpoder: " + nuevoHeroe.superpoder,
-            "\nPlaneta: " + nuevoHeroe.planeta,
-            "\nFuerza: " + nuevoHeroe.fuerza,
-            "\nVida: " + nuevoHeroe.vida,
-            "\nDefensa: " + nuevoHeroe.defensa,
-            "\n-------------------------------------------"
-        ]
-        datosTxt.push(nuevoHeroeFormateadoTxt);
-
-        fs.writeFileSync('./databases/datos.txt', datosTxt.join('\n'));
-
-        limpiar()
-
-        console.log(`${nuevoHeroe.nombre} añadido a la DB en txt`)
+        console.log('Sin guardado adicional')
     }
+
 }
 
 const editarHeroe = () => {
@@ -199,8 +188,9 @@ const borrarHeroe = () => {
 const salir = async () => {
 
     limpiar()
-
+    console.log("Documentos en mongo actualizando...")
     console.log("Saliendo del programa en...")
+
 
     setTimeout(() => {
         console.log('... 3')

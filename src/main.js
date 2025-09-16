@@ -5,7 +5,6 @@ let inicio = true;
 
 
 // Menú interactivo
-limpiar()
 while (inicio == true) {
 
     console.log(`
@@ -29,10 +28,7 @@ while (inicio == true) {
         case 2: { editarHeroe() } break;
         case 3: { listarHeroes() } break;
         case 4: { borrarHeroe() } break;
-        case 5: {
-            salir()
-            inicio = false
-        } break;
+        case 5: { salir(); inicio = false } break;
         default: {
             console.log(`
                 ╔══════════════════════════════════╗
