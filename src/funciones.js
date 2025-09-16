@@ -24,7 +24,7 @@ let atributo = (atr) => {
 const addHeroe = () => { // Tiene elección de formato (JSON/txt)
 
     limpiar()
-    const nombre = prompt(`Introduce el nombre del héroe: `).toUpperCase();
+    const nombre = prompt('Introduce el nombre del héroe: ').toUpperCase();
     const superpoder = prompt(`Introduce el superpoder de ${nombre}: `)
     const planeta = prompt(`De que planeta viene ${nombre}: `)
 
@@ -33,15 +33,20 @@ const addHeroe = () => { // Tiene elección de formato (JSON/txt)
     const defensa = atributo(`defensa`);
 
     let nuevoHeroe = new Heroe(nombre, superpoder, planeta, fuerza, vida, defensa);
-    crearHeroeMongo(nombre, superpoder, planeta, fuerza, vida, defensa)
-
 
     limpiar()
-    console.log(`${nombre} ha sido creado y enviado directamente a la base de datos en Mongo`)
-    let guardadoAdicional = Number(prompt(`Guardar adicionalmente en otro formato? (s/n): `));
+    crearHeroeMongo(nombre, superpoder, planeta, fuerza, vida, defensa)
 
-    if (guardadoAdicional == `s`) {
-        let formatoIntroduccionDeDatos = Number(prompt(`Guardar en JSON(1) o en txt(0): `));
+    let guardadoAdicional = prompt(`Guardar adicionalmente en otro formato? (s/n): `);
+
+    if (guardadoAdicional == "s") {
+        limpiar()
+        console.log(`
+        GUARDADO ADICIONAL:
+        1. JSON
+        2. TXT
+            `)
+        let formatoIntroduccionDeDatos = Number(prompt(`Formato a guardar: `));
         if (formatoIntroduccionDeDatos == 1) { // Formato JSON
             datosJSON.push(nuevoHeroe);
 
@@ -73,6 +78,8 @@ const addHeroe = () => { // Tiene elección de formato (JSON/txt)
         limpiar()
         console.log(`Sin guardado adicional`)
     }
+
+
 
 }
 
@@ -180,9 +187,7 @@ const borrarHeroe = () => {
 const salir = async () => {
 
     limpiar()
-    console.log(`Documentos en mongo actualizando...`)
     console.log(`Saliendo del programa en...`)
-
 
     setTimeout(() => {
         console.log(`... 3`)

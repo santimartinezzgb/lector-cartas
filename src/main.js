@@ -4,6 +4,7 @@ const { addHeroe, editarHeroe, listarHeroes, borrarHeroe, salir, limpiar } = req
 let inicio = true;
 const { conexionMongo } = require('./api-mongo.js')
 
+limpiar()
 conexionMongo()
 // Menú interactivo
 while (inicio == true) {

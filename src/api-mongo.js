@@ -16,32 +16,29 @@ const conexionMongo = () => {
     }
 }
 
-const crearHeroeMongo = (a, b, c, d, e, f,) => {
 
-    let coleccion = `superheroes`
-    const heroeSchema = new mongoose.Schema(
-        {
-            nombre: String, superpoder: String, planeta: String,
-            fuerza: Number, vida: Number, defensa: Number
-        },
-        { versionKey: false });
+let coleccion = 'superheroes'
+const heroeSchema = new mongoose.Schema(
+    {
+        nombre: String, superpoder: String, planeta: String,
+        fuerza: Number, vida: Number, defensa: Number
+    },
+    { versionKey: false });
 
-    const heroeModelo = mongoose.model(coleccion, heroeSchema);
+let heroeModelo = mongoose.model(coleccion, heroeSchema);
 
-    try {
-        const nuevoHeroe = heroeModelo({
-            nombre: a,
-            superpoder: b,
-            planeta: c,
-            fuerza: d,
-            vida: e,
-            defensa: f
-        });
-        nuevoHeroe.save();
-        console.log(`Héroe añadido en mongo`)
 
-    } catch (err) {
-        console.log(`No se a podido añadir el nuevo héroe a mongo: ${err}`)
-    }
+const crearHeroeMongo = (a, b, c, d, e, f) => {
+    heroeModelo.insertOne({
+        nombre: a,
+        superpoder: b,
+        planeta: c,
+        fuerza: d,
+        vida: e,
+        defensa: f
+    });
+
+    console.log(`${a} añadido a la base de datos de MONGO`);
+    console.log(`----------------------------------------------`)
 }
 module.exports = { conexionMongo, crearHeroeMongo }
