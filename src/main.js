@@ -2,8 +2,9 @@
 const prompt = require("prompt-sync")()
 const { addHeroe, editarHeroe, listarHeroes, borrarHeroe, salir, limpiar } = require("./funciones.js");
 let inicio = true;
+const { conexionMongo } = require('./api-mongo.js')
 
-
+conexionMongo()
 // Menú interactivo
 while (inicio == true) {
 
