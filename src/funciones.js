@@ -136,13 +136,29 @@ const listarHeroes = () => { // Tiene elección de formato (JSON/txt)
 
     if (formatoIntroduccionDeDatos == 1) {
 
+        console.log(`
+        ╔═════════════════════════════════╗
+        ║   1. nombre                     ║
+        ║   2. superpoder                 ║            
+        ║   3. planeta                    ║
+        ║   4. fuerza                     ║
+        ║   5. vida                       ║
+        ║   6. defensa                    ║
+        ╚═════════════════════════════════╝
+        `)
+
+        let seleccionAtributo = Number(prompt("Seleciona atributo por el que"))
         limpiar()
 
-        console.log(`HÉROES`)
+        switch (seleccionAtributo) {
+            case 1: datosJSON.forEach((heroe, index) => { console.log(`${index + 1}. ${heroe.nombre}`) }); break;
+            case 2: datosJSON.forEach((heroe, index) => { console.log(`${index + 1}. Superpoder de ${heroe.nombre}: ${heroe.superpoder}`) }); break;
+            case 3: datosJSON.forEach((heroe, index) => { console.log(`${index + 1}. Planeta de ${heroe.nombre}: ${heroe.planeta}`) }); break;
+            case 4: datosJSON.forEach((heroe, index) => { console.log(`${index + 1}. Fuerza de ${heroe.nombre}: ${heroe.fuerza}`) }); break;
+            case 5: datosJSON.forEach((heroe, index) => { console.log(`${index + 1}. Vida de ${heroe.nombre}: ${heroe.vida}`) }); break;
+            case 6: datosJSON.forEach((heroe, index) => { console.log(`${index + 1}. Defensa de ${heroe.nombre}: ${heroe.defensa}`) }); break;
+        }
 
-        datosJSON.forEach((heroe, index) => {
-            console.log(`${index + 1}. ${heroe.nombre}`)
-        });
 
     } else {
 

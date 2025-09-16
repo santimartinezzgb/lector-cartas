@@ -1,10 +1,18 @@
 [
   {
-    "nombre": "A",
-    "superpoder": "a",
-    "planeta": "a",
-    "fuerza": 1,
-    "vida": 1,
-    "defensa": 1
+    "nombre": "SUPERMAN",
+    "superpoder": "vuela",
+    "planeta": "kripton",
+    "fuerza": 99,
+    "vida": 99,
+    "defensa": 99
+  },
+  {
+    "nombre": "SPIDERMAN",
+    "superpoder": "araña",
+    "planeta": "tierra",
+    "fuerza": 5,
+    "vida": 5,
+    "defensa": 5
   }
 ]
