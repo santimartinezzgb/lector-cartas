@@ -23,6 +23,7 @@ let atributo = (atr) => {
 }
 
 
+// Conexión con mongo
 let database = "universo"
 let coleccion = "superheroes"
 mongoose.connect(`mongodb+srv://${usuarioMongo}:${password}@cluster0.fgumghx.mongodb.net/${database}`)
@@ -35,8 +36,6 @@ const heroeSchema = new mongoose.Schema(
     { versionKey: false });
 
 const heroeModelo = mongoose.model(coleccion, heroeSchema);
-
-
 
 
 
