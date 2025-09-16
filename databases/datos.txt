@@ -5,3 +5,10 @@ Fuerza: 1,
 Vida: 1,
 Defensa: 1,
 -------------------------------------------
+Héroe: A,
+Superpoder: a,
+Planeta: a,
+Fuerza: 1,
+Vida: 1,
+Defensa: 1,
+-------------------------------------------

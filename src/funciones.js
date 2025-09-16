@@ -89,8 +89,6 @@ const addHeroe = () => { // Tiene elección de formato (JSON/txt)
         console.log(`Sin guardado adicional`)
     }
 
-
-
 }
 
 const editarHeroe = () => {
@@ -148,12 +146,13 @@ const listarHeroes = () => { // Tiene elección de formato (JSON/txt)
 
         console.log(`
         ╔═════════════════════════════════╗
-        ║   1. nombre                     ║
-        ║   2. superpoder                 ║            
-        ║   3. planeta                    ║
-        ║   4. fuerza                     ║
-        ║   5. vida                       ║
-        ║   6. defensa                    ║
+        ║   1. Nombre                     ║
+        ║   2. Superpoder                 ║            
+        ║   3. Planeta                    ║
+        ║   4. Fuerza                     ║
+        ║   5. Vida                       ║
+        ║   6. Defensa                    ║
+        ║   7. All                        ║
         ╚═════════════════════════════════╝
         `)
 
@@ -167,6 +166,7 @@ const listarHeroes = () => { // Tiene elección de formato (JSON/txt)
             case 4: datosJSON.forEach((heroe, index) => { console.log(`${index + 1}. Fuerza de ${heroe.nombre}: ${heroe.fuerza}`) }); break;
             case 5: datosJSON.forEach((heroe, index) => { console.log(`${index + 1}. Vida de ${heroe.nombre}: ${heroe.vida}`) }); break;
             case 6: datosJSON.forEach((heroe, index) => { console.log(`${index + 1}. Defensa de ${heroe.nombre}: ${heroe.defensa}`) }); break;
+            case 7: datosJSON.forEach((heroe, index) => { console.log(`\n${index + 1}. ${heroe.nombre} tiene el superpoder de ${heroe.superpoder} y viene del planeta ${heroe.planeta}.\nSus atributos son ${heroe.fuerza} de fuerza, ${heroe.vida} de vida y ${heroe.defensa} de defensa`) }); break;
         }
 
 

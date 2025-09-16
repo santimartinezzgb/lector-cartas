@@ -14,5 +14,13 @@
     "fuerza": 5,
     "vida": 5,
     "defensa": 5
+  },
+  {
+    "nombre": "HULK",
+    "superpoder": "fuerza nuclear",
+    "planeta": "la tierra",
+    "fuerza": 99,
+    "vida": 50,
+    "defensa": 70
   }
 ]
