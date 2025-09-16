@@ -26,6 +26,7 @@ const addHeroe = () => { // Tiene elección de formato (JSON/txt)
     limpiar()
     let nombre = prompt('Introduce el nombre del héroe: ').toUpperCase();
 
+    // Control para hacer el nombre una primary key
     for (let i = 0; i < datosJSON.length; i++) {
         while (datosJSON[i].nombre === nombre) {
             limpiar()
