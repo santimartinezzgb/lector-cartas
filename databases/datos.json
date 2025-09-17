@@ -22,5 +22,13 @@
     "fuerza": 99,
     "vida": 50,
     "defensa": 70
+  },
+  {
+    "nombre": "LOOO",
+    "tipo": "fuego",
+    "ataqueEspecial": "ventisca",
+    "fuerza": 99,
+    "vida": 12,
+    "defensa": 12
   }
 ]

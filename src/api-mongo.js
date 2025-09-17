@@ -17,10 +17,10 @@ const conexionMongo = () => {
 }
 
 
-let coleccion = 'superheroes'
+let coleccion = 'monstruos'
 const heroeSchema = new mongoose.Schema(
     {
-        nombre: String, superpoder: String, planeta: String,
+        nombre: String, tipo: String, ataqueEspecial: String,
         fuerza: Number, vida: Number, defensa: Number
     },
     { versionKey: false });
@@ -31,8 +31,8 @@ let heroeModelo = mongoose.model(coleccion, heroeSchema);
 const crearHeroeMongo = (a, b, c, d, e, f) => {
     heroeModelo.insertOne({
         nombre: a,
-        superpoder: b,
-        planeta: c,
+        tipo: b,
+        ataqueEspecial: c,
         fuerza: d,
         vida: e,
         defensa: f

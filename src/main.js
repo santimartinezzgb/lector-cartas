@@ -1,6 +1,6 @@
 // Importaciones
 const prompt = require("prompt-sync")()
-const { addHeroe, editarHeroe, listarHeroes, borrarHeroe, salir, limpiar } = require("./funciones.js");
+const { addMonstruo, editarMonstruo, listarMonstruos, borrarMonstruo, salir, limpiar } = require("./funciones.js");
 let inicio = true;
 const { conexionMongo } = require('./api-mongo.js')
 
@@ -11,13 +11,13 @@ while (inicio == true) {
 
     console.log(`
   ╔════════════════════════════╗
-  ║    🦸 MENÚ DE HÉROES 🦸    ║
+  ║     MENÚ DE MONSTRUOS      ║
   ╚════════════════════════════╝
   ┌─────────────────────────────┐
-  │  1. ➕ Añadir héroe         │
-  │  2. ✏️  Modificar héroe      │
-  │  3. 📜 Listar héroes        │
-  │  4. 🗑️  Eliminar héroe       │
+  │  1. ➕ Añadir monstruo      │
+  │  2. ✏️  Modificar monstruo   │
+  │  3. 📜 Listar monstruo      │
+  │  4. 🗑️  Eliminar monstruo    │
   │  5. 🚪 Salir                │
   └─────────────────────────────┘
 `);
@@ -26,10 +26,10 @@ while (inicio == true) {
     limpiar()
 
     switch (seleccion) { // Según seleccion entra en el método correspondiente
-        case 1: { addHeroe() } break;
-        case 2: { editarHeroe() } break;
-        case 3: { listarHeroes() } break;
-        case 4: { borrarHeroe() } break;
+        case 1: { addMonstruo() } break;
+        case 2: { editarMonstruo() } break;
+        case 3: { listarMonstruos() } break;
+        case 4: { borrarMonstruo() } break;
         case 5: { salir(); inicio = false } break;
         default: {
             console.log(`
