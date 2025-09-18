@@ -18,27 +18,26 @@ const conexionMongo = () => {
 
 
 let coleccion = 'monstruos'
-const heroeSchema = new mongoose.Schema(
+const monstruoSchema = new mongoose.Schema(
     {
         nombre: String, tipo: String, ataqueEspecial: String,
         fuerza: Number, vida: Number, defensa: Number
     },
     { versionKey: false });
 
-let heroeModelo = mongoose.model(coleccion, heroeSchema);
+let monstruoModelo = mongoose.model(coleccion, monstruoSchema);
 
 
-const crearHeroeMongo = (a, b, c, d, e, f) => {
-    heroeModelo.insertOne({
+const crearMonstruoMongo = (a, b, c, d, e) => {
+    monstruoModelo.insertOne({
         nombre: a,
         tipo: b,
-        ataqueEspecial: c,
-        fuerza: d,
-        vida: e,
-        defensa: f
+        fuerza: c,
+        vida: d,
+        defensa: e
     });
 
     console.log(`${a} añadido a la base de datos de MONGO`);
     console.log(`----------------------------------------------`)
 }
-module.exports = { conexionMongo, crearHeroeMongo }
+module.exports = { conexionMongo, crearMonstruoMongo }
