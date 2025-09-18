@@ -1,8 +1,9 @@
 // Importaciones
-const Heroe = require(`./clases.js`);
+const Monstruo = require(`./clases.js`);
 const fs = require(`fs`)
 const prompt = require(`prompt-sync`)()
-const { crearHeroeMongo } = require(`./api-mongo.js`)
+const { crearMonstruoMongo } = require(`./api-mongo.js`);
+const Monstruo = require("./clases.js");
 
 // Lecturas de bases de datos JSON y txt
 let datosJSON = JSON.parse(fs.readFileSync(`./databases/datos.json`));
@@ -21,21 +22,31 @@ let atributo = (atr) => {
 
 
 // MÉTODOS PRINCIPALES
-const addHeroe = () => { // Tiene elección de formato (JSON/txt)
+const addMonstruo = () => { // Tiene elección de formato (JSON/txt)
 
     limpiar()
-    const nombre = prompt('Introduce el nombre del héroe: ').toUpperCase();
-    const superpoder = prompt(`Introduce el superpoder de ${nombre}: `)
-    const planeta = prompt(`De que planeta viene ${nombre}: `)
+    let nombre = prompt('Introduce el nombre del mostruo: ').toUpperCase();
+
+    // Control para hacer el nombre una primary key
+    for (let i = 0; i < datosJSON.length; i++) {
+        while (datosJSON[i].nombre === nombre) {
+            limpiar()
+            console.log("Nombre ocupado")
+            nombre = prompt('Introduce el nombre del monstruo: ').toUpperCase();
+        }
+    }
+
+    const tipo = prompt(`Introduce el tipo de ${nombre}: `)
+    const ataqueEspecial = prompt(`De que ataqueEspecial viene ${nombre}: `)
 
     const fuerza = atributo(`fuerza`);
     const vida = atributo(`vida`);
     const defensa = atributo(`defensa`);
 
-    let nuevoHeroe = new Heroe(nombre, superpoder, planeta, fuerza, vida, defensa);
+    let nuevoMostruo = new Monstruo(nombre, tipo, ataqueEspecial, fuerza, vida, defensa);
 
     limpiar()
-    crearHeroeMongo(nombre, superpoder, planeta, fuerza, vida, defensa)
+    crearMonstruoMongo(nombre, tipo, ataqueEspecial, fuerza, vida, defensa)
 
     let guardadoAdicional = prompt(`Guardar adicionalmente en otro formato? (s/n): `);
 
@@ -48,53 +59,51 @@ const addHeroe = () => { // Tiene elección de formato (JSON/txt)
             `)
         let formatoIntroduccionDeDatos = Number(prompt(`Formato a guardar: `));
         if (formatoIntroduccionDeDatos == 1) { // Formato JSON
-            datosJSON.push(nuevoHeroe);
+            datosJSON.push(nuevoMostruo);
 
             fs.writeFileSync(`./databases/datos.json`, JSON.stringify(datosJSON, null, 2));
 
             limpiar()
 
-            console.log(`${nuevoHeroe.nombre} añadido a la DB en JSON`)
+            console.log(`${nuevoMostruo.nombre} añadido a la DB en JSON`)
 
         } else { // Formato txt
-            const nuevoHeroeFormateadoTxt = [
-                `Héroe: ` + nuevoHeroe.nombre,
-                `\nSuperpoder: ` + nuevoHeroe.superpoder,
-                `\nPlaneta: ` + nuevoHeroe.planeta,
-                `\nFuerza: ` + nuevoHeroe.fuerza,
-                `\nVida: ` + nuevoHeroe.vida,
-                `\nDefensa: ` + nuevoHeroe.defensa,
+            const nuevoMonstruoFormateadoTxt = [
+                `Héroe: ` + nuevoMostruo.nombre,
+                `\ntipo: ` + nuevoMostruo.tipo,
+                `\nataqueEspecial: ` + nuevoMostruo.ataqueEspecial,
+                `\nFuerza: ` + nuevoMostruo.fuerza,
+                `\nVida: ` + nuevoMostruo.vida,
+                `\nDefensa: ` + nuevoMostruo.defensa,
                 `\n-------------------------------------------`
             ]
-            datosTxt.push(nuevoHeroeFormateadoTxt);
+            datosTxt.push(nuevoMonstruoFormateadoTxt);
 
             fs.writeFileSync(`./databases/datos.txt`, datosTxt.join(`\n`));
 
             limpiar()
 
-            console.log(`${nuevoHeroe.nombre} añadido a la DB en txt`)
+            console.log(`${nuevoMostruo.nombre} añadido a la DB en txt`)
         }
     } else {
         limpiar()
         console.log(`Sin guardado adicional`)
     }
 
-
-
 }
 
-const editarHeroe = () => {
+const editarMonstruo = () => {
 
     limpiar()
 
-    console.log(`HÉROES`)
+    console.log(`MONSTRUOS`)
 
-    datosJSON.forEach((heroe, index) => {
-        console.log(`${index + 1}. ${heroe.nombre}`)
+    datosJSON.forEach((Monstruo, index) => {
+        console.log(`${index + 1}. ${Monstruo.nombre}`)
     });
 
-    const seleccionHeroe = Number(prompt(`Selecciona un héroe para editar: `));
-    const elegido = datos[seleccionHeroe - 1]
+    const seleccionMonstruo = Number(prompt(`Selecciona un monstruo para editar: `));
+    const elegido = datos[seleccionMonstruo - 1]
 
     limpiar()
 
@@ -102,8 +111,8 @@ const editarHeroe = () => {
         ╔═════════════════════════════════╗
         ║   Atributos de ${elegido.nombre}║
         ║   1. nombre                     ║
-        ║   2. superpoder                 ║            
-        ║   3. planeta                    ║
+        ║   2. tipo                       ║            
+        ║   3. ataqueEspecial             ║
         ║   4. fuerza                     ║
         ║   5. vida                       ║
         ║   6. defensa                    ║
@@ -115,8 +124,8 @@ const editarHeroe = () => {
     switch (seleccionAtributo) {
 
         case 1: elegido.nombre = prompt(`Nuevo nombre: `); break;
-        case 2: elegido.superpoder = prompt(`Nuevo superpoder: `); break;
-        case 3: elegido.planeta = prompt(`Nuevo planeta: `); break;
+        case 2: elegido.tipo = prompt(`Nuevo tipo: `); break;
+        case 3: elegido.ataqueEspecial = prompt(`Nuevo ataqueEspecial: `); break;
         case 4: elegido.fuerza = Number(prompt(`Nueva estadística de fuerza: `)); break;
         case 5: elegido.vida = Number(prompt(`Nuevo estadística de vida: `)); break;
         case 6: elegido.defensa = Number(prompt(`Nuevo estadística de defensa: `)); break;
@@ -124,11 +133,11 @@ const editarHeroe = () => {
 
     limpiar()
 
-    console.log(`Héroe actualizado con éxito`)
+    console.log(`Monstruo actualizado con éxito`)
 
 }
 
-const listarHeroes = () => { // Tiene elección de formato (JSON/txt)
+const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
 
     limpiar()
 
@@ -136,13 +145,31 @@ const listarHeroes = () => { // Tiene elección de formato (JSON/txt)
 
     if (formatoIntroduccionDeDatos == 1) {
 
+        console.log(`
+        ╔═════════════════════════════════╗
+        ║   1. Nombre                     ║
+        ║   2. tipo                 ║            
+        ║   3. ataqueEspecial                    ║
+        ║   4. Fuerza                     ║
+        ║   5. Vida                       ║
+        ║   6. Defensa                    ║
+        ║   7. All                        ║
+        ╚═════════════════════════════════╝
+        `)
+
+        let seleccionAtributo = Number(prompt("Seleciona atributo por el que"))
         limpiar()
 
-        console.log(`HÉROES`)
+        switch (seleccionAtributo) {
+            case 1: datosJSON.forEach((Monstruo, index) => { console.log(`${index + 1}. ${Monstruo.nombre}`) }); break;
+            case 2: datosJSON.forEach((Monstruo, index) => { console.log(`${index + 1}. tipo de ${Monstruo.nombre}: ${Monstruo.tipo}`) }); break;
+            case 3: datosJSON.forEach((Monstruo, index) => { console.log(`${index + 1}. ataqueEspecial de ${Monstruo.nombre}: ${Monstruo.ataqueEspecial}`) }); break;
+            case 4: datosJSON.forEach((Monstruo, index) => { console.log(`${index + 1}. Fuerza de ${Monstruo.nombre}: ${Monstruo.fuerza}`) }); break;
+            case 5: datosJSON.forEach((Monstruo, index) => { console.log(`${index + 1}. Vida de ${Monstruo.nombre}: ${Monstruo.vida}`) }); break;
+            case 6: datosJSON.forEach((Monstruo, index) => { console.log(`${index + 1}. Defensa de ${Monstruo.nombre}: ${Monstruo.defensa}`) }); break;
+            case 7: datosJSON.forEach((Monstruo, index) => { console.log(`\n${index + 1}. ${Monstruo.nombre} tiene el tipo de ${Monstruo.tipo} y viene del ataqueEspecial ${Monstruo.ataqueEspecial}.\nSus atributos son ${Monstruo.fuerza} de fuerza, ${Monstruo.vida} de vida y ${Monstruo.defensa} de defensa`) }); break;
+        }
 
-        datosJSON.forEach((heroe, index) => {
-            console.log(`${index + 1}. ${heroe.nombre}`)
-        });
 
     } else {
 
@@ -153,7 +180,7 @@ const listarHeroes = () => { // Tiene elección de formato (JSON/txt)
     }
 
 }
-const borrarHeroe = () => {
+const borrarMonstruo = () => {
 
     limpiar();
 
@@ -161,15 +188,15 @@ const borrarHeroe = () => {
 
         console.log(`HÉROES`)
 
-        datosJSON.forEach((heroe, index) => {
-            console.log(`${index + 1}. ${heroe.nombre}`)
+        datosJSON.forEach((Monstruo, index) => {
+            console.log(`${index + 1}. ${Monstruo.nombre}`)
         });
 
-        const seleccionHeroe = Number(prompt(`Selecciona un héroe para eliminar: `));
-        const heroeEliminar = datosJSON[seleccionHeroe - 1]
-        const nombreDelEliminado = heroeEliminar.nombre
+        const seleccionMonstruo = Number(prompt(`Selecciona un héroe para eliminar: `));
+        const MonstruoEliminar = datosJSON[seleccionMonstruo - 1]
+        const nombreDelEliminado = MonstruoEliminar.nombre
 
-        datosJSON = datosJSON.filter(heroe => heroe.nombre !== heroeEliminar.nombre)
+        datosJSON = datosJSON.filter(Monstruo => Monstruo.nombre !== MonstruoEliminar.nombre)
 
         fs.writeFileSync(`./databases/datos.json`, JSON.stringify(datosJSON, null, 2));
 
@@ -207,4 +234,4 @@ const salir = async () => {
     }, 4000)
 }
 
-module.exports = { addHeroe, editarHeroe, listarHeroes, borrarHeroe, salir, limpiar }
+module.exports = { addMonstruo, editarMonstruo, listarMonstruos, borrarMonstruo, salir, limpiar }

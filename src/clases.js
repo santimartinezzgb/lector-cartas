@@ -1,23 +1,12 @@
-class Heroe {
-    constructor(nombre, superpoder, planeta, fuerza, vida, defensa) {
+class Monstruo {
+    constructor(nombre, tipo, ataqueEspecial, fuerza, vida, defensa) {
         this.nombre = nombre
-        this.superpoder = superpoder
-        this.planeta = planeta
+        this.tipo = tipo
+        this.ataqueEspecial = ataqueEspecial
         this.fuerza = fuerza
         this.vida = vida
         this.defensa = defensa
     }
-
-    static saludar() {
-        console.log(`Hola mundo, mi nombre es ${this.nombre} y vengo del planeta ${this.planeta}`)
-    }
-    static mostrarAtributos() {
-        console.log(`Mis atributos son:
-            Fuerza: ${this.fuerza}
-            Vida: ${this.vida}
-            Defensa: ${this.defensa}`
-        )
-    }
 }
 
-module.exports = Heroe
+module.exports = Monstruo
