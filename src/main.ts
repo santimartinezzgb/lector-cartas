@@ -1,7 +1,6 @@
 // Importaciones
-import promptsync from "prompt-sync";
-const prompt = promptsync();
-import { addMonstruo, editarMonstruo, listarMonstruos, borrarMonstruo, salir, limpiar } from "./funciones.js";
+const prompt = require("prompt-sync")();
+const { addMonstruo, editarMonstruo, listarMonstruos, borrarMonstruo, salir, limpiar } = require("./funciones.ts");
 let inicio = true;
 
 limpiar()

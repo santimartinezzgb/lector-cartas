@@ -1,15 +1,14 @@
 // Importaciones
-import { Monstruo } from './clases.js';
-import fs from 'fs';
-import promptsync from "prompt-sync";
-const prompt = promptsync();
+const { Monstruo } = require('./clases.ts');
+const fs = require('fs');
+const prompt = require('prompt-sync');
 
 // Lecturas de bases de datos JSON y txt
-let datosJSON = JSON.parse(fs.readFileSync('./databases/datos.json', 'utf8')) as Monstruo[];
-let datosTxt = fs.readFileSync(`./databases/datos.txt`, `utf8`).split(`\n`).filter(line => line.trim());
+let datosJSON = JSON.parse(fs.readFileSync('./databases/datos.json', 'utf8'));
+let datosTxt = fs.readFileSync(`./databases/datos.txt`, `utf8`).split(`\n`).filter((line: string) => line.trim());
 
 // Métodos auxiliares
-export const limpiar = () => { console.clear() }
+const limpiar = () => { console.clear() }
 
 let atributo = (atr: string) => {
     let puntuacion = Number(prompt(`Indroduce su ${atr} (1-99): `))
@@ -21,7 +20,7 @@ let atributo = (atr: string) => {
 
 
 // MÉTODOS PRINCIPALES
-export const addMonstruo = () => { // Tiene elección de formato (JSON/txt)
+const addMonstruo = () => { // Tiene elección de formato (JSON/txt)
 
     limpiar()
     let nombre = prompt('Introduce el nombre del mostruo: ').toUpperCase();
@@ -88,13 +87,13 @@ export const addMonstruo = () => { // Tiene elección de formato (JSON/txt)
 
 }
 
-export const editarMonstruo = () => {
+const editarMonstruo = () => {
 
     limpiar()
 
     console.log(`MONSTRUOS`)
 
-    datosJSON.forEach((Monstruo: Monstruo, index: number) => {
+    datosJSON.forEach((Monstruo: { nombre: string; }, index: number) => {
         console.log(`${index + 1}. ${Monstruo.nombre}`)
     });
 
@@ -139,7 +138,7 @@ export const editarMonstruo = () => {
 
 }
 
-export const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
+const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
 
     limpiar()
 
@@ -172,27 +171,27 @@ export const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
 
         switch (seleccionAtributo) {
             case 1:
-                datosJSON.forEach((Monstruo: Monstruo, index: number) => {
+                datosJSON.forEach((Monstruo: { nombre: string; }, index: number) => {
                     console.log(`${index + 1}. ${Monstruo.nombre}`)
                 }); break;
             case 2:
-                datosJSON.forEach((Monstruo: Monstruo, index: number) => {
+                datosJSON.forEach((Monstruo: { nombre: string, tipo: string }, index: number) => {
                     console.log(`${index + 1}. Tipo de ${Monstruo.nombre}: ${Monstruo.tipo}`)
                 }); break;
             case 3:
-                datosJSON.forEach((Monstruo: Monstruo, index: number) => {
+                datosJSON.forEach((Monstruo: { nombre: string, fuerza: number }, index: number) => {
                     console.log(`${index + 1}. Fuerza de ${Monstruo.nombre}: ${Monstruo.fuerza}`)
                 }); break;
             case 4:
-                datosJSON.forEach((Monstruo: Monstruo, index: number) => {
+                datosJSON.forEach((Monstruo: { nombre: string, vida: number }, index: number) => {
                     console.log(`${index + 1}. Vida de ${Monstruo.nombre}: ${Monstruo.vida}`)
                 }); break;
             case 5:
-                datosJSON.forEach((Monstruo: Monstruo, index: number) => {
+                datosJSON.forEach((Monstruo: { nombre: string, defensa: number }, index: number) => {
                     console.log(`${index + 1}. Defensa de ${Monstruo.nombre}: ${Monstruo.defensa}`)
                 }); break;
             case 6:
-                datosJSON.forEach((Monstruo: Monstruo, index: number) => {
+                datosJSON.forEach((Monstruo: { nombre: string, tipo: string, fuerza: number, vida: number, defensa: number }, index: number) => {
                     console.log(`\n${index + 1}. ${Monstruo.nombre} tiene el tipo de ${Monstruo.tipo}.\nSus atributos son ${Monstruo.fuerza} de fuerza, ${Monstruo.vida} de vida y ${Monstruo.defensa} de defensa`)
                 }); break;
         }
@@ -207,7 +206,7 @@ export const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
     }
 
 }
-export const borrarMonstruo = () => {
+const borrarMonstruo = () => {
 
     limpiar();
 
@@ -215,7 +214,7 @@ export const borrarMonstruo = () => {
 
         console.log(`HÉROES`)
 
-        datosJSON.forEach((Monstruo: Monstruo, index: number) => {
+        datosJSON.forEach((Monstruo: { nombre: string }, index: number) => {
             console.log(`${index + 1}. ${Monstruo.nombre}`)
         });
 
@@ -230,7 +229,7 @@ export const borrarMonstruo = () => {
         const MonstruoEliminar = datosJSON[seleccionMonstruo - 1]
         const nombreDelEliminado = MonstruoEliminar.nombre
 
-        datosJSON = datosJSON.filter((Monstruo: Monstruo) => Monstruo.nombre !== MonstruoEliminar.nombre)
+        datosJSON = datosJSON.filter((Monstruo: { nombre: string }) => Monstruo.nombre !== MonstruoEliminar.nombre)
 
         fs.writeFileSync(`./databases/datos.json`, JSON.stringify(datosJSON, null, 2));
 
@@ -245,7 +244,7 @@ export const borrarMonstruo = () => {
 }
 
 
-export const salir = async () => {
+const salir = async () => {
 
     limpiar()
     console.log(`Saliendo del programa en...`)
@@ -267,3 +266,6 @@ export const salir = async () => {
         process.exit()
     }, 4000)
 }
+
+
+module.exports = { addMonstruo, editarMonstruo, listarMonstruos, borrarMonstruo, salir, limpiar }

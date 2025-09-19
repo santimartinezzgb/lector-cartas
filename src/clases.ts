@@ -1,4 +1,4 @@
-export class Monstruo {
+class Monstruo {
     nombre: string
     tipo: string
     fuerza: number
@@ -12,3 +12,5 @@ export class Monstruo {
         this.defensa = defensa
     }
 }
+
+module.exports = Monstruo
