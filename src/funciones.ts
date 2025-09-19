@@ -176,7 +176,7 @@ const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
                 }); break;
             case 2:
                 datosJSON.forEach((Monstruo: { nombre: string, tipo: string }, index: number) => {
-                    console.log(`${index + 1}. Tipo de ${Monstruo.nombre}: ${Monstruo.tipo}`)
+                    console.log(`${index + 1}. Tipo: ${Monstruo.nombre}: ${Monstruo.tipo}`)
                 }); break;
             case 3:
                 datosJSON.forEach((Monstruo: { nombre: string, fuerza: number }, index: number) => {
@@ -192,7 +192,7 @@ const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
                 }); break;
             case 6:
                 datosJSON.forEach((Monstruo: { nombre: string, tipo: string, fuerza: number, vida: number, defensa: number }, index: number) => {
-                    console.log(`\n${index + 1}. ${Monstruo.nombre} tiene el tipo de ${Monstruo.tipo}.\nSus atributos son ${Monstruo.fuerza} de fuerza, ${Monstruo.vida} de vida y ${Monstruo.defensa} de defensa`)
+                    console.log(`\n${index + 1}. ${Monstruo.nombre} tiene es tipo ${Monstruo.tipo}.\nSus atributos son ${Monstruo.fuerza} de fuerza, ${Monstruo.vida} de vida y ${Monstruo.defensa} de defensa`)
                 }); break;
         }
 

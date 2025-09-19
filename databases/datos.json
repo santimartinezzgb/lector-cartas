@@ -1,1 +1,9 @@
-[]
+[
+  {
+    "nombre": "DRAGÓN",
+    "tipo": "smaug",
+    "fuerza": 99,
+    "vida": 99,
+    "defensa": 99
+  }
+]
