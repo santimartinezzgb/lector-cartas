@@ -1,11 +1,10 @@
 // Importaciones
-const prompt = require("prompt-sync")()
-const { addMonstruo, editarMonstruo, listarMonstruos, borrarMonstruo, salir, limpiar } = require("./funciones.js");
+const prompt = require("prompt-sync")();
+const { addMonstruo, editarMonstruo, listarMonstruos, borrarMonstruo, salir, limpiar } = require("./funciones.ts");
 let inicio = true;
-const { conexionMongo } = require('./api-mongo.js')
 
 limpiar()
-conexionMongo()
+
 // Menú interactivo
 while (inicio == true) {
 
@@ -22,7 +21,7 @@ while (inicio == true) {
   └─────────────────────────────┘
 `);
 
-    const seleccion = Number(prompt("Selecciona una opción del menú: "));
+    const seleccion: Number = Number(prompt('Selecciona una opción: '));
     limpiar()
 
     switch (seleccion) { // Según seleccion entra en el método correspondiente
@@ -33,9 +32,9 @@ while (inicio == true) {
         case 5: { salir(); inicio = false } break;
         default: {
             console.log(`
-                ╔══════════════════════════════════╗
- ═════════>     ║   Selecciona una opción válida   ║
-                ╚══════════════════════════════════╝
+        ╔══════════════════════════════════╗
+        ║   Selecciona una opción válida   ║
+        ╚══════════════════════════════════╝
             `)
         }
     }
