@@ -1,7 +1,8 @@
 // Importaciones
 const { Monstruo } = require('./clases.ts');
 const fs = require('fs');
-const prompt = require('prompt-sync');
+const promptsync = require('prompt-sync');
+const prompt = promptsync();
 
 // Lecturas de bases de datos JSON y txt
 let datosJSON = JSON.parse(fs.readFileSync('./databases/datos.json', 'utf8'));
@@ -41,7 +42,6 @@ const addMonstruo = () => { // Tiene elección de formato (JSON/txt)
     const defensa = atributo(`defensa`);
 
     let nuevoMostruo = new Monstruo(nombre, tipo, fuerza, vida, defensa);
-
 
     limpiar()
     console.log(`

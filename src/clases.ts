@@ -13,4 +13,4 @@ class Monstruo {
     }
 }
 
-module.exports = Monstruo
+module.exports = { Monstruo }
