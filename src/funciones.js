@@ -2,7 +2,6 @@
 const Monstruo = require(`./clases.js`);
 const fs = require(`fs`)
 const prompt = require(`prompt-sync`)()
-const { crearMonstruoMongo } = require(`./api-mongo.js`);
 
 // Lecturas de bases de datos JSON y txt
 let datosJSON = JSON.parse(fs.readFileSync(`./databases/datos.json`));
@@ -43,48 +42,45 @@ const addMonstruo = () => { // Tiene elección de formato (JSON/txt)
 
     let nuevoMostruo = new Monstruo(nombre, tipo, fuerza, vida, defensa);
 
+
     limpiar()
-    crearMonstruoMongo(nombre, tipo, fuerza, vida, defensa)
-
-    let guardadoAdicional = prompt(`Guardar adicionalmente en otro formato? (s/n): `);
-
-    if (guardadoAdicional == "s") {
-        limpiar()
-        console.log(`
+    console.log(`
         GUARDADO ADICIONAL:
         1. JSON
         2. TXT
-            `)
-        let formatoIntroduccionDeDatos = Number(prompt(`Formato a guardar: `));
-        if (formatoIntroduccionDeDatos == 1) { // Formato JSON
-            datosJSON.push(nuevoMostruo);
+            `);
 
-            fs.writeFileSync(`./databases/datos.json`, JSON.stringify(datosJSON, null, 2));
+    let formatoIntroduccionDeDatos = Number(prompt(`Formato a guardar: `));
 
-            limpiar()
+    while (formatoIntroduccionDeDatos < 1 || formatoIntroduccionDeDatos > 2 || isNaN(formatoIntroduccionDeDatos) == true) {
+        formatoIntroduccionDeDatos = Number(prompt(`Selecciona formato válido a guardar: `))
+    }
 
-            console.log(`${nuevoMostruo.nombre} añadido a la DB en JSON`)
+    if (formatoIntroduccionDeDatos == 1) { // Formato JSON
+        datosJSON.push(nuevoMostruo);
 
-        } else { // Formato txt
-            const nuevoMonstruoFormateadoTxt = [
-                `Héroe: ` + nuevoMostruo.nombre,
-                `\ntipo: ` + nuevoMostruo.tipo,
-                `\nFuerza: ` + nuevoMostruo.fuerza,
-                `\nVida: ` + nuevoMostruo.vida,
-                `\nDefensa: ` + nuevoMostruo.defensa,
-                `\n-------------------------------------------`
-            ]
-            datosTxt.push(nuevoMonstruoFormateadoTxt);
+        fs.writeFileSync(`./databases/datos.json`, JSON.stringify(datosJSON, null, 2));
 
-            fs.writeFileSync(`./databases/datos.txt`, datosTxt.join(`\n`));
-
-            limpiar()
-
-            console.log(`${nuevoMostruo.nombre} añadido a la DB en txt`)
-        }
-    } else {
         limpiar()
-        console.log(`Sin guardado adicional`)
+
+        console.log(`${nuevoMostruo.nombre} añadido a la DB en JSON`)
+
+    } else { // Formato txt
+        const nuevoMonstruoFormateadoTxt = [
+            `Héroe: ` + nuevoMostruo.nombre,
+            `\ntipo: ` + nuevoMostruo.tipo,
+            `\nFuerza: ` + nuevoMostruo.fuerza,
+            `\nVida: ` + nuevoMostruo.vida,
+            `\nDefensa: ` + nuevoMostruo.defensa,
+            `\n-------------------------------------------`
+        ]
+        datosTxt.push(nuevoMonstruoFormateadoTxt);
+
+        fs.writeFileSync(`./databases/datos.txt`, datosTxt.join(`\n`));
+
+        limpiar()
+
+        console.log(`${nuevoMostruo.nombre} añadido a la DB en txt`)
     }
 
 }
@@ -100,7 +96,11 @@ const editarMonstruo = () => {
     });
 
     const seleccionMonstruo = Number(prompt(`Selecciona un monstruo para editar: `));
-    const elegido = datos[seleccionMonstruo - 1]
+
+    while (seleccionMonstruo < 1 || seleccionMonstruo > datosJSON.length || isNaN(seleccionMonstruo) == true) {
+        seleccionMonstruo = Number(prompt(`Selecciona un monstruo válido para editar: `))
+    }
+    const elegido = datosJSON[seleccionMonstruo - 1]
 
     limpiar()
 
@@ -116,6 +116,7 @@ const editarMonstruo = () => {
         `)
 
     const seleccionAtributo = Number(prompt(`Selecciona atributo a editar: `))
+
     while (seleccionAtributo < 1 || seleccionAtributo > 5 || isNaN(seleccionAtributo) == true) {
         seleccionAtributo = Number(prompt(`Selecciona atributo válido a editar: `))
     }
@@ -141,6 +142,10 @@ const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
 
     let formatoIntroduccionDeDatos = Number(prompt(`Seleccion de formato: JSON(1) o txt(0): `));
 
+    while (formatoIntroduccionDeDatos < 0 || formatoIntroduccionDeDatos > 1 || isNaN(formatoIntroduccionDeDatos) == true) {
+        formatoIntroduccionDeDatos = Number(prompt(`Selecciona formato válido: JSON(1) o txt(0): `))
+    }
+
     if (formatoIntroduccionDeDatos == 1) {
 
         console.log(`
@@ -154,8 +159,9 @@ const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
         ╚═════════════════════════════════╝
         `)
 
-        let seleccionAtributo = Number(prompt("Seleciona atributo por el que listar: "))
-        while (seleccionAtributo < 1 || seleccionAtributo > 7 || isNaN(seleccionAtributo) == true) {
+        let seleccionAtributo = Number(prompt("Seleciona atributo por el que listar: "));
+
+        while (seleccionAtributo < 1 || seleccionAtributo > 6 || isNaN(seleccionAtributo) == true) {
             seleccionAtributo = Number(prompt(`Selecciona atributo válido por el que listar: `))
         }
 
@@ -193,6 +199,7 @@ const borrarMonstruo = () => {
         });
 
         const seleccionMonstruo = Number(prompt(`Selecciona un héroe para eliminar: `));
+
         while (seleccionMonstruo < 1 || seleccionMonstruo > datosJSON.length || isNaN(seleccionMonstruo) == true) {
             seleccionMonstruo = Number(prompt(`Selecciona un héroe válido para eliminar: `))
         }

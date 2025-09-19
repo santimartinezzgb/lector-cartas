@@ -30,5 +30,12 @@
     "fuerza": 99,
     "vida": 12,
     "defensa": 12
+  },
+  {
+    "nombre": "BASILI",
+    "tipo": "planta",
+    "fuerza": 66,
+    "vida": 55,
+    "defensa": 4
   }
 ]

@@ -2,10 +2,9 @@
 const prompt = require("prompt-sync")()
 const { addMonstruo, editarMonstruo, listarMonstruos, borrarMonstruo, salir, limpiar } = require("./funciones.js");
 let inicio = true;
-const { conexionMongo } = require('./api-mongo.js')
 
 limpiar()
-conexionMongo()
+
 // Menú interactivo
 while (inicio == true) {
 
