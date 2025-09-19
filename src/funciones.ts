@@ -4,7 +4,6 @@ const fs = require('fs');
 const promptsync = require('prompt-sync');
 const prompt = promptsync();
 
-
 // Lecturas de bases de datos JSON y txt
 let datosJSON = JSON.parse(fs.readFileSync('./databases/datos.json', 'utf8'));
 let datosTxt = fs.readFileSync(`./databases/datos.txt`, `utf8`).split(`\n`).filter((line: string) => line.trim());
