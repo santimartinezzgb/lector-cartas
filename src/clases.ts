@@ -4,6 +4,7 @@ class Monstruo {
     fuerza: number
     vida: number
     defensa: number
+
     constructor(nombre: string, tipo: string, fuerza: number, vida: number, defensa: number) {
         this.nombre = nombre
         this.tipo = tipo
