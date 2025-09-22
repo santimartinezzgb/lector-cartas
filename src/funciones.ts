@@ -3,6 +3,12 @@ const { Monstruo } = require('./clases.ts');
 const fs = require('fs');
 const promptsync = require('prompt-sync');
 const prompt = promptsync();
+const mysql = require('mysql2/promise');
+const { globalMYSQL } = require('../databases/mysql.js')
+require('dotenv').config()
+
+const nombreUsuario = process.env.MYSQL_USER;
+const nombrePassword = process.env.MYSQL_PASSWORD;
 
 // Lecturas de bases de datos JSON y txt
 let datosJSON = JSON.parse(fs.readFileSync('./databases/datos.json', 'utf8'));
@@ -21,7 +27,7 @@ let atributo = (atr: string) => {
 
 
 // MÉTODOS PRINCIPALES
-const addMonstruo = () => { // Tiene elección de formato (JSON/txt)
+const addMonstruo = () => {
 
     limpiar()
     let nombre = prompt('Introduce el nombre del mostruo: ').toUpperCase();
@@ -48,42 +54,48 @@ const addMonstruo = () => { // Tiene elección de formato (JSON/txt)
         GUARDADO ADICIONAL:
         1. JSON
         2. TXT
+        3. MYSQL
             `);
 
     let formatoIntroduccionDeDatos = Number(prompt(`Formato a guardar: `));
 
-    while (formatoIntroduccionDeDatos < 1 || formatoIntroduccionDeDatos > 2 || isNaN(formatoIntroduccionDeDatos) == true) {
+    while (formatoIntroduccionDeDatos < 1 || formatoIntroduccionDeDatos > 3 || isNaN(formatoIntroduccionDeDatos) == true) {
         formatoIntroduccionDeDatos = Number(prompt(`Selecciona formato válido a guardar: `))
     }
 
-    if (formatoIntroduccionDeDatos == 1) { // Formato JSON
 
-        // Paso de datos a la base de datos JSON
-        datosJSON.push(nuevoMostruo);
-        fs.writeFileSync(`./databases/datos.json`, JSON.stringify(datosJSON, null, 2));
+    switch (formatoIntroduccionDeDatos) {
+        case 1: {
+            // Paso de datos a la base de datos JSON
+            datosJSON.push(nuevoMostruo);
+            fs.writeFileSync(`./databases/datos.json`, JSON.stringify(datosJSON, null, 2));
 
-        limpiar()
+            limpiar()
 
-        console.log(`${nuevoMostruo.nombre} añadido a la DB en JSON`)
+            console.log(`${nuevoMostruo.nombre} añadido a la DB en JSON`)
+        } break;
+        case 2: {
+            const nuevoMonstruoFormateadoTxt = [
+                `Héroe: ` + nuevoMostruo.nombre,
+                `\ntipo: ` + nuevoMostruo.tipo,
+                `\nFuerza: ` + nuevoMostruo.fuerza,
+                `\nVida: ` + nuevoMostruo.vida,
+                `\nDefensa: ` + nuevoMostruo.defensa,
+                `\n-------------------------------------------`
+            ]
 
-    } else { // Formato txt
-        const nuevoMonstruoFormateadoTxt = [
-            `Héroe: ` + nuevoMostruo.nombre,
-            `\ntipo: ` + nuevoMostruo.tipo,
-            `\nFuerza: ` + nuevoMostruo.fuerza,
-            `\nVida: ` + nuevoMostruo.vida,
-            `\nDefensa: ` + nuevoMostruo.defensa,
-            `\n-------------------------------------------`
-        ]
+            // Paso de datos a la base de datos txt
+            datosTxt.push(nuevoMonstruoFormateadoTxt.join(''));
+            fs.writeFileSync(`./databases/datos.txt`, datosTxt.join(`\n`));
 
-        // Paso de datos a la base de datos txt
-        datosTxt.push(nuevoMonstruoFormateadoTxt.join(''));
-        fs.writeFileSync(`./databases/datos.txt`, datosTxt.join(`\n`));
+            limpiar()
 
-        limpiar()
-
-        console.log(`${nuevoMostruo.nombre} añadido a la DB en txt`)
+            console.log(`${nuevoMostruo.nombre} añadido a la DB en txt`)
+        } case 3: {
+            globalMYSQL(nombre, tipo, fuerza, vida, defensa, nombreUsuario, nombrePassword)
+        }
     }
+
 
 }
 
@@ -262,7 +274,6 @@ const salir = async () => {
     }, 3000)
 
     setTimeout(() => {
-
         process.exit()
     }, 4000)
 }

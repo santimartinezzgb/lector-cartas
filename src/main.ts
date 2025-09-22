@@ -21,7 +21,7 @@ while (inicio == true) {
   └─────────────────────────────┘
 `);
 
-    const seleccion: Number = Number(prompt('Selecciona una opción: '));
+    const seleccion = Number(prompt('Selecciona una opción: '));
     limpiar()
 
     switch (seleccion) { // Según seleccion entra en el método correspondiente
