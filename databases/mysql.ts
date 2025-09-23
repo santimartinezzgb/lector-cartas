@@ -1,27 +1,36 @@
 const mysql = require('mysql2/promise');
-const { styleText } = require('util');
+const { Monstruo } = require('../src/clases.ts')
 
 
-const addMonstruo_sql_db = (a, b, c, d, e, A, B) => {
+// Método que añade un nuevo monstruo a la base de datos de MySQL workbench
+const addMonstruo_sql_db = (
+    nombre: string,
+    tipo: string,
+    fuerza: string,
+    vida: string,
+    defensa: string,
+    usuarioMYSQL: string,
+    passwordMYSQL: string
+) => {
     let nombre_tabla = "cartas";
 
     console.clear();
 
-    async function conectarYConsultar(nom_tabla) {
+    async function conectarYConsultar(nom_tabla: string) {
 
         try {
 
             const connection = await mysql.createConnection({
                 host: 'localhost',
-                user: A,
-                password: B,
+                user: usuarioMYSQL,
+                password: passwordMYSQL,
                 database: 'Monstruos'
             });
 
 
             const [rows] = await connection.execute(
                 `INSERT INTO ${nom_tabla} (nombre, tipo, fuerza, vida, defensa) VALUES (?, ?, ?, ?, ?)`,
-                [a, b, c, d, e]
+                [nombre, tipo, fuerza, vida, defensa]
             );
 
             await connection.end();
@@ -35,42 +44,41 @@ const addMonstruo_sql_db = (a, b, c, d, e, A, B) => {
     const conectar = () => {
 
         return new Promise((resolve) => {
-            // A los 2 segundos, ejecuta la función con resolve
-            setTimeout(() => {
-                resolve(conectarYConsultar(nombre_tabla));
-            }, 3000)
+            resolve(conectarYConsultar(nombre_tabla));
+
         })
     }
 
     conectar()
 }
 
-const listarMonstruo_sql_db = (a, b) => {
+// Método que lista los monstruos de la base de datos de MySQL workbench
+const listarMonstruo_sql_db = (usuarioMYSQL: string, passwordMYSQL: string) => {
 
     console.clear()
     let nombre_tabla = "cartas";
 
-    async function conectarYConsultar(nom_tabla) {
+    async function conectarYConsultar(nom_tabla: string) {
 
         try {
 
             const connection = await mysql.createConnection({
                 host: 'localhost',
-                user: a,
-                password: b,
+                user: usuarioMYSQL,
+                password: passwordMYSQL,
                 database: 'Monstruos'
             });
 
             const [rows] = await connection.execute(`select * from ${nom_tabla}`);
             await connection.end();
 
-            rows.forEach((c, index) => {
+            rows.forEach((Monstruo: any, index: string) => {
                 console.log(`
-                    | ${index + 1}. ${c.nombre} 
-                    | Tipo: ${c.tipo} 
-                    | Fuerza: ${c.fuerza} 
-                    | Vida: ${c.vida} 
-                    | Defensa: ${c.defensa}
+                    | ${index + 1}. ${Monstruo.nombre} 
+                    | Tipo: ${Monstruo.tipo} 
+                    | Fuerza: ${Monstruo.fuerza} 
+                    | Vida: ${Monstruo.vida} 
+                    | Defensa: ${Monstruo.defensa}
                     |________________________________________`)
             })
 
@@ -80,7 +88,14 @@ const listarMonstruo_sql_db = (a, b) => {
         }
     }
 
-    conectarYConsultar(nombre_tabla)
+    const conectar = () => {
+
+        return new Promise((resolve) => {
+            resolve(conectarYConsultar(nombre_tabla));
+        })
+    }
+
+    conectar()
 }
 
 module.exports = { addMonstruo_sql_db, listarMonstruo_sql_db }

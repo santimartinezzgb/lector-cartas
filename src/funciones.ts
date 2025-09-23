@@ -3,7 +3,7 @@ const { Monstruo } = require('./clases.ts');
 const fs = require('fs');
 const promptsync = require('prompt-sync');
 const prompt = promptsync();
-const { addMonstruo_sql_db, listarMonstruo_sql_db } = require('../databases/mysql.js')
+const { addMonstruo_sql_db, listarMonstruo_sql_db } = require('../databases/mysql.ts')
 require('dotenv').config()
 
 const nombreUsuario = process.env.MYSQL_USER;
@@ -222,7 +222,8 @@ const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
         } break;
         case 3: {
             listarMonstruo_sql_db(nombreUsuario, nombrePassword)
-        }
+
+        } break;
     }
 
 
