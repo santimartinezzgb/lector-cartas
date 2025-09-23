@@ -3,8 +3,7 @@ const { Monstruo } = require('./clases.ts');
 const fs = require('fs');
 const promptsync = require('prompt-sync');
 const prompt = promptsync();
-const mysql = require('mysql2/promise');
-const { globalMYSQL } = require('../databases/mysql.js')
+const { addMonstruo_sql_db, listarMonstruo_sql_db } = require('../databases/mysql.js')
 require('dotenv').config()
 
 const nombreUsuario = process.env.MYSQL_USER;
@@ -92,7 +91,7 @@ const addMonstruo = () => {
 
             console.log(`${nuevoMostruo.nombre} añadido a la DB en txt`)
         } case 3: {
-            globalMYSQL(nombre, tipo, fuerza, vida, defensa, nombreUsuario, nombrePassword)
+            addMonstruo_sql_db(nombre, tipo, fuerza, vida, defensa, nombreUsuario, nombrePassword)
         }
     }
 
@@ -152,70 +151,80 @@ const editarMonstruo = () => {
 
 const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
 
+
     limpiar()
+    console.log(`
+        LISTAR BASE DE DATOS DE:
+        1. JSON
+        2. TXT
+        3. MYSQL
+            `);
 
-    let formatoIntroduccionDeDatos = Number(prompt(`Seleccion de formato: JSON(1) o txt(0): `));
+    let formatoIntroduccionDeDatos = Number(prompt(`Introduce elección (1, 2, 3): `));
 
-    while (formatoIntroduccionDeDatos < 0 || formatoIntroduccionDeDatos > 1 || isNaN(formatoIntroduccionDeDatos) == true) {
-        formatoIntroduccionDeDatos = Number(prompt(`Selecciona formato válido: JSON(1) o txt(0): `))
+    while (formatoIntroduccionDeDatos < 1 || formatoIntroduccionDeDatos > 3 || isNaN(formatoIntroduccionDeDatos) == true) {
+        formatoIntroduccionDeDatos = Number(prompt(`Introduce una elección válida (1, 2, 3): `))
     }
 
-    if (formatoIntroduccionDeDatos == 1) {
+    switch (formatoIntroduccionDeDatos) {
+        case 1: {
+            console.log(`
+            ╔═════════════════════════════════╗
+            ║   1. Nombre                     ║
+            ║   2. tipo                       ║
+            ║   3. Fuerza                     ║
+            ║   4. Vida                       ║
+            ║   5. Defensa                    ║
+            ║   6. All                        ║
+            ╚═════════════════════════════════╝
+            `)
 
-        console.log(`
-        ╔═════════════════════════════════╗
-        ║   1. Nombre                     ║
-        ║   2. tipo                       ║
-        ║   3. Fuerza                     ║
-        ║   4. Vida                       ║
-        ║   5. Defensa                    ║
-        ║   6. All                        ║
-        ╚═════════════════════════════════╝
-        `)
+            let seleccionAtributo = Number(prompt("Seleciona atributo por el que listar: "));
 
-        let seleccionAtributo = Number(prompt("Seleciona atributo por el que listar: "));
+            while (seleccionAtributo < 1 || seleccionAtributo > 6 || isNaN(seleccionAtributo) == true) {
+                seleccionAtributo = Number(prompt(`Selecciona atributo válido por el que listar: `))
+            }
 
-        while (seleccionAtributo < 1 || seleccionAtributo > 6 || isNaN(seleccionAtributo) == true) {
-            seleccionAtributo = Number(prompt(`Selecciona atributo válido por el que listar: `))
+            limpiar()
+
+            switch (seleccionAtributo) {
+                case 1:
+                    datosJSON.forEach((Monstruo: { nombre: string; }, index: number) => {
+                        console.log(`${index + 1}. ${Monstruo.nombre}`)
+                    }); break;
+                case 2:
+                    datosJSON.forEach((Monstruo: { nombre: string, tipo: string }, index: number) => {
+                        console.log(`${index + 1}. Tipo: ${Monstruo.nombre}: ${Monstruo.tipo}`)
+                    }); break;
+                case 3:
+                    datosJSON.forEach((Monstruo: { nombre: string, fuerza: number }, index: number) => {
+                        console.log(`${index + 1}. Fuerza de ${Monstruo.nombre}: ${Monstruo.fuerza}`)
+                    }); break;
+                case 4:
+                    datosJSON.forEach((Monstruo: { nombre: string, vida: number }, index: number) => {
+                        console.log(`${index + 1}. Vida de ${Monstruo.nombre}: ${Monstruo.vida}`)
+                    }); break;
+                case 5:
+                    datosJSON.forEach((Monstruo: { nombre: string, defensa: number }, index: number) => {
+                        console.log(`${index + 1}. Defensa de ${Monstruo.nombre}: ${Monstruo.defensa}`)
+                    }); break;
+                case 6:
+                    datosJSON.forEach((Monstruo: { nombre: string, tipo: string, fuerza: number, vida: number, defensa: number }, index: number) => {
+                        console.log(`\n${index + 1}. ${Monstruo.nombre} tiene es tipo ${Monstruo.tipo}.\nSus atributos son ${Monstruo.fuerza} de fuerza, ${Monstruo.vida} de vida y ${Monstruo.defensa} de defensa`)
+                    }); break;
+            }
+        } break;
+        case 2: {
+            limpiar()
+
+            console.log(`HÉROES`)
+            console.log(datosTxt)
+        } break;
+        case 3: {
+            listarMonstruo_sql_db(nombreUsuario, nombrePassword)
         }
-
-        limpiar()
-
-        switch (seleccionAtributo) {
-            case 1:
-                datosJSON.forEach((Monstruo: { nombre: string; }, index: number) => {
-                    console.log(`${index + 1}. ${Monstruo.nombre}`)
-                }); break;
-            case 2:
-                datosJSON.forEach((Monstruo: { nombre: string, tipo: string }, index: number) => {
-                    console.log(`${index + 1}. Tipo: ${Monstruo.nombre}: ${Monstruo.tipo}`)
-                }); break;
-            case 3:
-                datosJSON.forEach((Monstruo: { nombre: string, fuerza: number }, index: number) => {
-                    console.log(`${index + 1}. Fuerza de ${Monstruo.nombre}: ${Monstruo.fuerza}`)
-                }); break;
-            case 4:
-                datosJSON.forEach((Monstruo: { nombre: string, vida: number }, index: number) => {
-                    console.log(`${index + 1}. Vida de ${Monstruo.nombre}: ${Monstruo.vida}`)
-                }); break;
-            case 5:
-                datosJSON.forEach((Monstruo: { nombre: string, defensa: number }, index: number) => {
-                    console.log(`${index + 1}. Defensa de ${Monstruo.nombre}: ${Monstruo.defensa}`)
-                }); break;
-            case 6:
-                datosJSON.forEach((Monstruo: { nombre: string, tipo: string, fuerza: number, vida: number, defensa: number }, index: number) => {
-                    console.log(`\n${index + 1}. ${Monstruo.nombre} tiene es tipo ${Monstruo.tipo}.\nSus atributos son ${Monstruo.fuerza} de fuerza, ${Monstruo.vida} de vida y ${Monstruo.defensa} de defensa`)
-                }); break;
-        }
-
-
-    } else {
-
-        limpiar()
-
-        console.log(`HÉROES`)
-        console.log(datosTxt)
     }
+
 
 }
 const borrarMonstruo = () => {
@@ -256,7 +265,7 @@ const borrarMonstruo = () => {
 }
 
 
-const salir = async () => {
+const salir = () => {
 
     limpiar()
     console.log(`Saliendo del programa en...`)
