@@ -1,6 +1,14 @@
 const mysql = require('mysql2/promise');
 const { Monstruo } = require('../src/clases.ts')
 
+type Monstruo = {
+    nombre: string,
+    tipo: string,
+    fuerza: string,
+    vida: string,
+    defensa: string
+}
+
 
 // Método que añade un nuevo monstruo a la base de datos de MySQL workbench
 const addMonstruo_sql_db = (
@@ -72,7 +80,7 @@ const listarMonstruo_sql_db = (usuarioMYSQL: string, passwordMYSQL: string) => {
             const [rows] = await connection.execute(`select * from ${nom_tabla}`);
             await connection.end();
 
-            rows.forEach((Monstruo: any, index: string) => {
+            rows.forEach((Monstruo: Monstruo, index: string) => {
                 console.log(`
                     | ${index + 1}. ${Monstruo.nombre} 
                     | Tipo: ${Monstruo.tipo} 

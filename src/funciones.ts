@@ -168,6 +168,7 @@ const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
 
     switch (formatoIntroduccionDeDatos) {
         case 1: {
+            limpiar()
             console.log(`
             ╔═════════════════════════════════╗
             ║   1. Nombre                     ║
@@ -221,6 +222,7 @@ const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
             console.log(datosTxt)
         } break;
         case 3: {
+            limpiar()
             listarMonstruo_sql_db(nombreUsuario, nombrePassword)
 
         } break;
