@@ -61,9 +61,10 @@ const addMonstruo_sql_db = (
 }
 
 // Método que lista los monstruos de la base de datos de MySQL workbench
-const listarMonstruo_sql_db = (usuarioMYSQL: string, passwordMYSQL: string) => {
+const listarMonstruo_sql_db = (usuarioMYSQL: string, passwordMYSQL: string, bool: boolean) => {
 
     console.clear()
+    console.log('Pulsa 5 para revisar listado')
     let nombre_tabla = "cartas";
 
     async function conectarYConsultar(nom_tabla: string) {
@@ -80,32 +81,31 @@ const listarMonstruo_sql_db = (usuarioMYSQL: string, passwordMYSQL: string) => {
             const [rows] = await connection.execute(`select * from ${nom_tabla}`);
             await connection.end();
 
-            rows.forEach((Monstruo: Monstruo, index: string) => {
-                console.log(`
+            if (bool == true) {
+                rows.forEach((Monstruo: Monstruo, index: string) => {
+                    console.log(`
                     | ${index + 1}. ${Monstruo.nombre} 
                     | Tipo: ${Monstruo.tipo} 
-                    | Fuerza: ${Monstruo.fuerza} 
-                    | Vida: ${Monstruo.vida} 
-                    | Defensa: ${Monstruo.defensa}
-                    |________________________________________`)
-            })
+                    |   Fuerza: ${Monstruo.fuerza} 
+                    |   Vida: ${Monstruo.vida} 
+                    |   Defensa: ${Monstruo.defensa}
+                    |________________________________________`);
+                });
+            } else {
+                rows.forEach((Monstruo: Monstruo, index: string) => {
+                    console.log(`
+                    | ${index + 1}. ${Monstruo.nombre}
+                    |________________________________________`);
+                });
+            }
 
         } catch (error) {
             console.error('Error al conectar a MySQL:', error);
-
         }
     }
 
-    const conectar = () => {
+    (conectarYConsultar(nombre_tabla));
 
-        return new Promise((resolve) => {
-            resolve(conectarYConsultar(nombre_tabla));
-        })
-    }
-
-    conectar()
 }
 
 module.exports = { addMonstruo_sql_db, listarMonstruo_sql_db }
-
-

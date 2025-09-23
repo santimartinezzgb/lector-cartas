@@ -3,7 +3,7 @@ const { Monstruo } = require('./clases.ts');
 const fs = require('fs');
 const promptsync = require('prompt-sync');
 const prompt = promptsync();
-const { addMonstruo_sql_db, listarMonstruo_sql_db } = require('../databases/mysql.ts')
+const { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db } = require('../databases/mysql.ts')
 require('dotenv').config()
 
 const nombreUsuario = process.env.MYSQL_USER;
@@ -26,7 +26,7 @@ let atributo = (atr: string) => {
 
 
 // MÉTODOS PRINCIPALES
-const addMonstruo = () => {
+const addMonstruo = async () => {
 
     limpiar()
     let nombre = prompt('Introduce el nombre del mostruo: ').toUpperCase();
@@ -40,7 +40,7 @@ const addMonstruo = () => {
         }
     }
 
-    const tipo = prompt(`Introduce el tipo de ${nombre}: `)
+    const tipo = prompt(`Introduce el tipo de ${nombre}: `).toUpperCase()
 
     const fuerza = atributo(`fuerza`);
     const vida = atributo(`vida`);
@@ -98,7 +98,7 @@ const addMonstruo = () => {
 
 }
 
-const editarMonstruo = () => {
+const editarMonstruo = async () => {
 
     limpiar()
 
@@ -149,7 +149,7 @@ const editarMonstruo = () => {
 
 }
 
-const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
+const listarMonstruos = async () => { // Tiene elección de formato (JSON/txt)
 
 
     limpiar()
@@ -216,23 +216,38 @@ const listarMonstruos = () => { // Tiene elección de formato (JSON/txt)
             }
         } break;
         case 2: {
-            limpiar()
+            limpiar();
 
             console.log(`HÉROES`)
             console.log(datosTxt)
         } break;
         case 3: {
-            limpiar()
-            listarMonstruo_sql_db(nombreUsuario, nombrePassword)
+            limpiar();
 
+            console.log(`
+            LISTAR:
+               1. Todos los datos
+               2. Nombre 
+                `)
+            const eleccion = Number(prompt('Listar:'))
+
+            switch (eleccion) {
+                case 1: {
+                    listarMonstruo_sql_db(nombreUsuario, nombrePassword, true)
+                } break;
+                case 2: {
+                    listarMonstruo_sql_db(nombreUsuario, nombrePassword, false)
+                }
+            }
         } break;
     }
 
 
 }
-const borrarMonstruo = () => {
+const borrarMonstruo = async () => {
 
     limpiar();
+
 
     if (datosJSON.length > 0) {
 
@@ -260,15 +275,15 @@ const borrarMonstruo = () => {
         console.log(`${nombreDelEliminado} ha sido eliminado`)
 
     } else {
-
         console.log(`No hay héroes en la lista`)
-
     }
+
+
 
 }
 
 
-const salir = () => {
+const salir = async () => {
 
     limpiar()
     console.log(`Saliendo del programa en...`)
