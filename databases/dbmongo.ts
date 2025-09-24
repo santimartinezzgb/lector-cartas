@@ -1,12 +1,15 @@
 const mongoose = require('mongoose');
-const modelo = mongoose.model('Carta', {
-    nombre: String,
-    tipo: String,
-    fuerza: Number,
-    vida: Number,
-    defensa: Number
-});
-
+const schema = new mongoose.Schema(
+    {
+        nombre: String,
+        tipo: String,
+        fuerza: Number,
+        vida: Number,
+        defensa: Number
+    },
+    { versionKey: false }
+)
+const modelo = mongoose.model('Carta', schema);
 
 async function addMongo(nombre: string, tipo: string, fuerza: number, vida: number, defensa: number) {
 
@@ -16,7 +19,7 @@ async function addMongo(nombre: string, tipo: string, fuerza: number, vida: numb
         fuerza: fuerza,
         vida: vida,
         defensa: defensa
-    })
+    });
 
     Monstruo
         .save()
@@ -24,10 +27,8 @@ async function addMongo(nombre: string, tipo: string, fuerza: number, vida: numb
 }
 
 async function listarMongo() {
-
     const cartas = await modelo.find()
     console.log(cartas)
-
 }
 
 module.exports = { addMongo, listarMongo }

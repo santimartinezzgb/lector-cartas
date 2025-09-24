@@ -6,13 +6,15 @@ const { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db } = req
 const { Monstruo } = require('./clases.ts');
 const { addMongo, listarMongo } = require('../databases/dbmongo.ts')
 
+
 // Variables de entorno ------------------------------------------------------------------------------------------------------------
 require('dotenv').config()
-const nombreUsuario = process.env.MYSQL_USER;
+const nombreUsuario = process.env.MYSQL_USER;       // Variables de MySQL 
 const nombrePassword = process.env.MYSQL_PASSWORD;
 
-const userMongo = process.env.MONGO_USER
-const userPassword = process.env.MONGO_PASSWORD
+const userMongo = process.env.MONGO_USER;           // Variables de Mongo
+const userPassword = process.env.MONGO_PASSWORD;
+
 
 // Conexiones ----------------------------------------------------------------------------------------------------------------------
 async function conexionMongo() {
@@ -20,14 +22,14 @@ async function conexionMongo() {
     await mongoose.connect(`mongodb+srv://${userMongo}:${userPassword}@cluster0.fgumghx.mongodb.net/Monstruos`)
         .then(console.log('Conexión con MongoDB establecida con éxito!'))
         .catch((err: Error) => console.log('Se ha producido un error en el intento de conexión: ', err))
-
-
 }
 conexionMongo();
+
 
 // Lecturas de bases de datos JSON y txt -------------------------------------------------------------------------------------------
 let datosJSON = JSON.parse(fs.readFileSync('./databases/datos.json', 'utf8'));
 let datosTxt = fs.readFileSync(`./databases/datos.txt`, `utf8`).split(`\n`).filter((line: string) => line.trim());
+
 
 // Métodos auxiliares --------------------------------------------------------------------------------------------------------------
 const limpiar = () => { console.clear() } // Método para limpiar terminal
@@ -76,7 +78,8 @@ const eleccion = (conTxt: boolean): Number => { // Elecciones de formatos
     }
 }
 
-// MÉTODOS PRINCIPALES---------------------------------------------------------------------------------------------------------------------
+
+// MÉTODOS PRINCIPALES--------------------------------------------------------------------------------------------------------------
 const addMonstruo = async () => { // Añadir nuevo monstruo
 
     limpiar()
@@ -307,21 +310,23 @@ const salir = async () => { // Salir del programa
     console.log(`Saliendo del programa en...`)
 
     setTimeout(() => {
-        console.log(`... 3`)
+        console.log(`       -- 3 --`)
     }, 1000)
 
     setTimeout(() => {
-        console.log(`... 2`)
+        console.log(`       -- 2 --`)
     }, 2000)
 
     setTimeout(() => {
-        console.log(`... 1`)
+        console.log(`       -- 1 --`)
     }, 3000)
 
     setTimeout(() => {
-        process.exit()
+        console.clear();
+        process.exit();
     }, 4000)
 }
+
 
 // Exportación de métodos ----------------------------------------------------------------------------------------------------------------
 module.exports = { addMonstruo, editarMonstruo, listarMonstruos, borrarMonstruo, salir, limpiar }
