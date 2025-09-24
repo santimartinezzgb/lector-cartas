@@ -2,13 +2,13 @@
 const fs = require('fs');
 const prompt = require('prompt-sync')();
 const mongoose = require('mongoose');
-const { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db } = require('../databases/mysql.ts');
+require('dotenv').config()
+const { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db } = require('../databases/db-mysql.ts');
 const { Monstruo } = require('./clases.ts');
-const { addMongo, listarMongo } = require('../databases/dbmongo.ts')
+const { addMongo, listarMongo } = require('../databases/db-mongo.ts')
 
 
 // Variables de entorno ------------------------------------------------------------------------------------------------------------
-require('dotenv').config()
 const nombreUsuario = process.env.MYSQL_USER;       // Variables de MySQL 
 const nombrePassword = process.env.MYSQL_PASSWORD;
 
@@ -41,6 +41,7 @@ const atributo = (atr: string) => { // Control de datos para atributos
     }
     return puntuacion
 }
+
 const eleccion = (conTxt: boolean): Number => { // Elecciones de formatos
     limpiar()
 
@@ -76,6 +77,13 @@ const eleccion = (conTxt: boolean): Number => { // Elecciones de formatos
         }
         return formatoIntroduccionDeDatos;
     }
+}
+const salida = (numero: number, tiempo: number) => {
+    setTimeout(() => {
+        limpiar();
+        console.log(`Saliendo del programa en...`)
+        console.log(`       -- ${numero} --`)
+    }, tiempo)
 }
 
 
@@ -309,22 +317,21 @@ const salir = async () => { // Salir del programa
     limpiar()
     console.log(`Saliendo del programa en...`)
 
-    setTimeout(() => {
-        console.log(`       -- 3 --`)
-    }, 1000)
-
-    setTimeout(() => {
-        console.log(`       -- 2 --`)
-    }, 2000)
-
-    setTimeout(() => {
-        console.log(`       -- 1 --`)
-    }, 3000)
+    salida(10, 500);
+    salida(9, 1000);
+    salida(8, 1500);
+    salida(7, 2000);
+    salida(6, 2500);
+    salida(5, 3000);
+    salida(4, 3500);
+    salida(3, 4000);
+    salida(2, 4500);
+    salida(1, 5000);
 
     setTimeout(() => {
         console.clear();
         process.exit();
-    }, 4000)
+    }, 5500)
 }
 
 
