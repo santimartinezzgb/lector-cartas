@@ -1,13 +1,29 @@
 // Importaciones--------------------------------------------------------------------------------------------------------------------
-const { Monstruo } = require('./clases.ts');
 const fs = require('fs');
 const prompt = require('prompt-sync')();
-const { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db } = require('../databases/mysql.ts')
+const mongoose = require('mongoose');
+const { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db } = require('../databases/mysql.ts');
+const { Monstruo } = require('./clases.ts');
+const { addMongo, listarMongo } = require('../databases/dbmongo.ts')
 
 // Variables de entorno ------------------------------------------------------------------------------------------------------------
 require('dotenv').config()
 const nombreUsuario = process.env.MYSQL_USER;
 const nombrePassword = process.env.MYSQL_PASSWORD;
+
+const userMongo = process.env.MONGO_USER
+const userPassword = process.env.MONGO_PASSWORD
+
+// Conexiones ----------------------------------------------------------------------------------------------------------------------
+async function conexionMongo() {
+
+    await mongoose.connect(`mongodb+srv://${userMongo}:${userPassword}@cluster0.fgumghx.mongodb.net/Monstruos`)
+        .then(console.log('Conexión con MongoDB establecida con éxito!'))
+        .catch((err: Error) => console.log('Se ha producido un error en el intento de conexión: ', err))
+
+
+}
+conexionMongo();
 
 // Lecturas de bases de datos JSON y txt -------------------------------------------------------------------------------------------
 let datosJSON = JSON.parse(fs.readFileSync('./databases/datos.json', 'utf8'));
@@ -33,12 +49,13 @@ const eleccion = (conTxt: boolean): Number => { // Elecciones de formatos
             1. JSON
             2. TXT
             3. MYSQL
+            4. MongoDB
         ╚═══════════════╝
             `);
 
         let formatoIntroduccionDeDatos = Number(prompt(`Formato a guardar: `));
 
-        while (formatoIntroduccionDeDatos < 1 || formatoIntroduccionDeDatos > 3 || isNaN(formatoIntroduccionDeDatos) == true) {
+        while (formatoIntroduccionDeDatos < 1 || formatoIntroduccionDeDatos > 4 || isNaN(formatoIntroduccionDeDatos) == true) {
             formatoIntroduccionDeDatos = Number(prompt(`Selecciona formato válido a guardar: `))
         }
         return formatoIntroduccionDeDatos;
@@ -111,9 +128,12 @@ const addMonstruo = async () => { // Añadir nuevo monstruo
         } case 3: {
 
             await addMonstruo_sql_db(nombre, tipo, fuerza, vida, defensa, nombreUsuario, nombrePassword)
-        }
+        } break;
+        case 4: {
+            limpiar()
+            addMongo(nombre, tipo, fuerza, vida, defensa)
+        } break;
     }
-
 
 }
 
@@ -228,6 +248,9 @@ const listarMonstruos = async () => { // Listar monstruos
         case 3: {
             limpiar();
             await listarMonstruo_sql_db(nombreUsuario, nombrePassword, true);
+        } break;
+        case 4: {
+            listarMongo();
         } break;
     }
 }
