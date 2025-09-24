@@ -1,33 +1,62 @@
-// Importaciones
+// Importaciones--------------------------------------------------------------------------------------------------------------------
 const { Monstruo } = require('./clases.ts');
 const fs = require('fs');
 const promptsync = require('prompt-sync');
 const prompt = promptsync();
-const mysql = require('mysql2/promise');
 const { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db } = require('../databases/mysql.ts')
 
-// Variables de entorno
+// Variables de entorno ------------------------------------------------------------------------------------------------------------
 require('dotenv').config()
 const nombreUsuario = process.env.MYSQL_USER;
 const nombrePassword = process.env.MYSQL_PASSWORD;
 
-// Lecturas de bases de datos JSON y txt
+// Lecturas de bases de datos JSON y txt -------------------------------------------------------------------------------------------
 let datosJSON = JSON.parse(fs.readFileSync('./databases/datos.json', 'utf8'));
 let datosTxt = fs.readFileSync(`./databases/datos.txt`, `utf8`).split(`\n`).filter((line: string) => line.trim());
 
-// Métodos auxiliares
-const limpiar = () => { console.clear() }
+// Métodos auxiliares --------------------------------------------------------------------------------------------------------------
+const limpiar = () => { console.clear() } // Método para limpiar terminal
 
-let atributo = (atr: string) => {
+const atributo = (atr: string) => { // Control de datos para atributos
     let puntuacion = Number(prompt(`Indroduce su ${atr} (1-99): `))
     while (puntuacion > 99 || puntuacion < 1 || isNaN(puntuacion) == true) {
         puntuacion = Number(prompt(`Indroduce puntuación válida (1-99): `))
     }
     return puntuacion
 }
+const eleccion = (conTxt: boolean): Number => { // Elecciones de formatos
+    limpiar()
 
+    if (conTxt) {
 
-// MÉTODOS PRINCIPALES
+        console.log(`
+            1. JSON
+            2. TXT
+            3. MYSQL
+            `);
+
+        let formatoIntroduccionDeDatos = Number(prompt(`Formato a guardar: `));
+
+        while (formatoIntroduccionDeDatos < 1 || formatoIntroduccionDeDatos > 3 || isNaN(formatoIntroduccionDeDatos) == true) {
+            formatoIntroduccionDeDatos = Number(prompt(`Selecciona formato válido a guardar: `))
+        }
+        return formatoIntroduccionDeDatos;
+    } else {
+        console.log(`
+            1. JSON
+            2. MYSQL
+            `);
+
+        let formatoIntroduccionDeDatos = Number(prompt(`Formato a guardar: `));
+
+        while (formatoIntroduccionDeDatos < 1 || formatoIntroduccionDeDatos > 3 || isNaN(formatoIntroduccionDeDatos) == true) {
+            formatoIntroduccionDeDatos = Number(prompt(`Selecciona formato válido a guardar: `))
+        }
+        return formatoIntroduccionDeDatos;
+    }
+}
+
+// MÉTODOS PRINCIPALES---------------------------------------------------------------------------------------------------------------------
 const addMonstruo = async () => {
 
     limpiar()
@@ -43,29 +72,13 @@ const addMonstruo = async () => {
     }
 
     const tipo = prompt(`Introduce el tipo de ${nombre}: `).toUpperCase()
-
     const fuerza = atributo(`fuerza`);
     const vida = atributo(`vida`);
     const defensa = atributo(`defensa`);
 
     let nuevoMostruo = new Monstruo(nombre, tipo, fuerza, vida, defensa);
 
-    limpiar()
-    console.log(`
-        GUARDADO ADICIONAL:
-        1. JSON
-        2. TXT
-        3. MYSQL
-            `);
-
-    let formatoIntroduccionDeDatos = Number(prompt(`Formato a guardar: `));
-
-    while (formatoIntroduccionDeDatos < 1 || formatoIntroduccionDeDatos > 3 || isNaN(formatoIntroduccionDeDatos) == true) {
-        formatoIntroduccionDeDatos = Number(prompt(`Selecciona formato válido a guardar: `))
-    }
-
-
-    switch (formatoIntroduccionDeDatos) {
+    switch (eleccion(true)) {
         case 1: {
             // Paso de datos a la base de datos JSON
             datosJSON.push(nuevoMostruo);
@@ -152,33 +165,19 @@ const editarMonstruo = async () => {
 
 }
 
-const listarMonstruos = async () => { // Tiene elección de formato (JSON/txt)
+const listarMonstruos = async () => {
 
-    limpiar()
-    console.log(`
-        LISTAR BASE DE DATOS DE:
-        1. JSON
-        2. TXT
-        3. MYSQL
-            `);
-
-    let formatoIntroduccionDeDatos = Number(prompt(`Introduce elección (1, 2, 3): `));
-
-    while (formatoIntroduccionDeDatos < 1 || formatoIntroduccionDeDatos > 3 || isNaN(formatoIntroduccionDeDatos) == true) {
-        formatoIntroduccionDeDatos = Number(prompt(`Introduce una elección válida (1, 2, 3): `))
-    }
-
-    switch (formatoIntroduccionDeDatos) {
+    switch (eleccion(true)) {
         case 1: {
             limpiar()
             console.log(`
             ╔═════════════════════════════════╗
-            ║   1. Nombre                     ║
-            ║   2. tipo                       ║
-            ║   3. Fuerza                     ║
-            ║   4. Vida                       ║
-            ║   5. Defensa                    ║
-            ║   6. All                        ║
+               1. Nombre                     
+               2. tipo                       
+               3. Fuerza                     
+               4. Vida                       
+               5. Defensa                    
+               6. All                        
             ╚═════════════════════════════════╝
             `)
 
@@ -197,7 +196,7 @@ const listarMonstruos = async () => { // Tiene elección de formato (JSON/txt)
                     }); break;
                 case 2:
                     datosJSON.forEach((Monstruo: { nombre: string, tipo: string }, index: number) => {
-                        console.log(`${index + 1}. Tipo: ${Monstruo.nombre}: ${Monstruo.tipo}`)
+                        console.log(`${index + 1}. EL tipo de ${Monstruo.nombre} es ${Monstruo.tipo}`)
                     }); break;
                 case 3:
                     datosJSON.forEach((Monstruo: { nombre: string, fuerza: number }, index: number) => {
@@ -232,20 +231,7 @@ const listarMonstruos = async () => { // Tiene elección de formato (JSON/txt)
 
 const borrarMonstruo = async () => {
 
-    limpiar()
-    console.log(`
-        LISTAR BASE DE DATOS DE:
-        1. JSON
-        2. MYSQL
-            `);
-
-    let formatoIntroduccionDeDatos = Number(prompt(`Introduce elección (1, 2): `));
-
-    while (formatoIntroduccionDeDatos < 1 || formatoIntroduccionDeDatos > 2 || isNaN(formatoIntroduccionDeDatos) == true) {
-        formatoIntroduccionDeDatos = Number(prompt(`Introduce una elección válida (1, 2): `))
-    }
-
-    switch (formatoIntroduccionDeDatos) {
+    switch (eleccion(false)) {
         case 1: {
             if (datosJSON.length > 0) {
 
@@ -311,5 +297,5 @@ const salir = async () => {
     }, 4000)
 }
 
-
+// Exportación de métodos ----------------------------------------------------------------------------------------------------------------
 module.exports = { addMonstruo, editarMonstruo, listarMonstruos, borrarMonstruo, salir, limpiar }

@@ -1,9 +1,17 @@
 // Importaciones
 const prompt = require("prompt-sync")();
+const mysql = require('mysql2/promise');
 const { addMonstruo, editarMonstruo, listarMonstruos, borrarMonstruo, salir, limpiar } = require("./funciones.ts");
 let inicio = true;
+// Variables de entorno
+require('dotenv').config()
+const nombreUsuario = process.env.MYSQL_USER;
+const nombrePassword = process.env.MYSQL_PASSWORD;
 
 limpiar()
+
+
+
 
 // Menú interactivo
 while (inicio == true) {
@@ -25,15 +33,26 @@ while (inicio == true) {
     limpiar()
 
     switch (seleccion) { // Según seleccion entra en el método correspondiente
-        case 1: { addMonstruo() } break;
-        case 2: { editarMonstruo() } break;
-        case 3: { listarMonstruos() } break;
-        case 4: { borrarMonstruo() } break;
-        case 5: { salir(); inicio = false } break;
+        case 1: {
+            addMonstruo()
+        } break;
+        case 2: {
+            editarMonstruo()
+        } break;
+        case 3: {
+            listarMonstruos()
+        } break;
+        case 4: {
+            borrarMonstruo()
+        } break;
+        case 5: {
+            salir();
+            inicio = false;
+        } break;
         default: {
             console.log(`
         ╔══════════════════════════════════╗
-        ║   Selecciona una opción válida   ║
+           Selecciona una opción válida   
         ╚══════════════════════════════════╝
             `)
         }
@@ -41,3 +60,4 @@ while (inicio == true) {
 
 
 }
+
