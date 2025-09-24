@@ -1,7 +1,7 @@
 [
   {
-    "nombre": "DRAGÓN",
-    "tipo": "smaug",
+    "nombre": "SMAUG",
+    "tipo": "DRAGÓN",
     "fuerza": 99,
     "vida": 99,
     "defensa": 99

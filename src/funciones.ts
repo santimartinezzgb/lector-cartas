@@ -3,9 +3,11 @@ const { Monstruo } = require('./clases.ts');
 const fs = require('fs');
 const promptsync = require('prompt-sync');
 const prompt = promptsync();
+const mysql = require('mysql2/promise');
 const { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db } = require('../databases/mysql.ts')
-require('dotenv').config()
 
+// Variables de entorno
+require('dotenv').config()
 const nombreUsuario = process.env.MYSQL_USER;
 const nombrePassword = process.env.MYSQL_PASSWORD;
 
@@ -91,7 +93,8 @@ const addMonstruo = async () => {
 
             console.log(`${nuevoMostruo.nombre} añadido a la DB en txt`)
         } case 3: {
-            addMonstruo_sql_db(nombre, tipo, fuerza, vida, defensa, nombreUsuario, nombrePassword)
+
+            await addMonstruo_sql_db(nombre, tipo, fuerza, vida, defensa, nombreUsuario, nombrePassword)
         }
     }
 
@@ -119,12 +122,12 @@ const editarMonstruo = async () => {
 
     console.log(`
         ╔═════════════════════════════════╗
-        ║   Atributos de ${elegido.nombre}║
-        ║   1. nombre                     ║
-        ║   2. tipo                       ║
-        ║   3. fuerza                     ║
-        ║   4. vida                       ║
-        ║   5. defensa                    ║
+           Atributos de ${elegido.nombre}
+           1. nombre                     
+           2. tipo                       
+           3. fuerza                     
+           4. vida                       
+           5. defensa                    
         ╚═════════════════════════════════╝
         `)
 
@@ -150,7 +153,6 @@ const editarMonstruo = async () => {
 }
 
 const listarMonstruos = async () => { // Tiene elección de formato (JSON/txt)
-
 
     limpiar()
     console.log(`
@@ -219,69 +221,73 @@ const listarMonstruos = async () => { // Tiene elección de formato (JSON/txt)
             limpiar();
 
             console.log(`HÉROES`)
-            console.log(datosTxt)
+            console.log(datosTxt.join(`\n`));
         } break;
         case 3: {
             limpiar();
-
-            console.log(`
-            LISTAR:
-               1. Todos los datos
-               2. Nombre 
-                `)
-            const eleccion = Number(prompt('Listar:'))
-
-            switch (eleccion) {
-                case 1: {
-                    listarMonstruo_sql_db(nombreUsuario, nombrePassword, true)
-                } break;
-                case 2: {
-                    listarMonstruo_sql_db(nombreUsuario, nombrePassword, false)
-                }
-            }
+            await listarMonstruo_sql_db(nombreUsuario, nombrePassword, true);
         } break;
     }
-
-
 }
+
 const borrarMonstruo = async () => {
 
-    limpiar();
+    limpiar()
+    console.log(`
+        LISTAR BASE DE DATOS DE:
+        1. JSON
+        2. MYSQL
+            `);
 
+    let formatoIntroduccionDeDatos = Number(prompt(`Introduce elección (1, 2): `));
 
-    if (datosJSON.length > 0) {
+    while (formatoIntroduccionDeDatos < 1 || formatoIntroduccionDeDatos > 2 || isNaN(formatoIntroduccionDeDatos) == true) {
+        formatoIntroduccionDeDatos = Number(prompt(`Introduce una elección válida (1, 2): `))
+    }
 
-        console.log(`HÉROES`)
+    switch (formatoIntroduccionDeDatos) {
+        case 1: {
+            if (datosJSON.length > 0) {
 
-        datosJSON.forEach((Monstruo: { nombre: string }, index: number) => {
-            console.log(`${index + 1}. ${Monstruo.nombre}`)
-        });
+                console.log(`HÉROES`)
 
-        let seleccionMonstruo = Number(prompt(`Selecciona un héroe para eliminar: `));
+                datosJSON.forEach((Monstruo: { nombre: string }, index: number) => {
+                    console.log(`${index + 1}. ${Monstruo.nombre}`)
+                });
 
-        while (seleccionMonstruo < 1 || seleccionMonstruo > datosJSON.length || isNaN(seleccionMonstruo) == true) {
-            seleccionMonstruo = Number(prompt(`Selecciona un héroe válido para eliminar: `))
+                let seleccionMonstruo = Number(prompt(`Selecciona un héroe para eliminar: `));
+
+                while (seleccionMonstruo < 1 || seleccionMonstruo > datosJSON.length || isNaN(seleccionMonstruo) == true) {
+                    seleccionMonstruo = Number(prompt(`Selecciona un héroe válido para eliminar: `))
+                }
+
+                limpiar()
+
+                const MonstruoEliminar = datosJSON[seleccionMonstruo - 1]
+                const nombreDelEliminado = MonstruoEliminar.nombre
+
+                datosJSON = datosJSON.filter((Monstruo: { nombre: string }) => Monstruo.nombre !== MonstruoEliminar.nombre)
+
+                fs.writeFileSync(`./databases/datos.json`, JSON.stringify(datosJSON, null, 2));
+
+                console.log(`${nombreDelEliminado} ha sido eliminado`)
+
+            } else {
+                console.log(`No hay héroes en la lista`)
+            }
+        } break;
+        case 2: {
+            const nombre_a_eliminar = prompt('Introduce el nombre del monstruo a eliminar: ').toUpperCase();
+            await borrarMonstruo_sql_db(nombreUsuario, nombrePassword, nombre_a_eliminar)
         }
-
-        limpiar()
-
-        const MonstruoEliminar = datosJSON[seleccionMonstruo - 1]
-        const nombreDelEliminado = MonstruoEliminar.nombre
-
-        datosJSON = datosJSON.filter((Monstruo: { nombre: string }) => Monstruo.nombre !== MonstruoEliminar.nombre)
-
-        fs.writeFileSync(`./databases/datos.json`, JSON.stringify(datosJSON, null, 2));
-
-        console.log(`${nombreDelEliminado} ha sido eliminado`)
-
-    } else {
-        console.log(`No hay héroes en la lista`)
     }
 
 
 
-}
 
+
+
+}
 
 const salir = async () => {
 
