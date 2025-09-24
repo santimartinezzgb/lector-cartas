@@ -5,5 +5,12 @@
     "fuerza": 99,
     "vida": 99,
     "defensa": 99
+  },
+  {
+    "nombre": "GIAFAR",
+    "tipo": "MAGO",
+    "fuerza": 70,
+    "vida": 60,
+    "defensa": 80
   }
 ]

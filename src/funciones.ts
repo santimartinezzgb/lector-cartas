@@ -1,8 +1,7 @@
 // Importaciones--------------------------------------------------------------------------------------------------------------------
 const { Monstruo } = require('./clases.ts');
 const fs = require('fs');
-const promptsync = require('prompt-sync');
-const prompt = promptsync();
+const prompt = require('prompt-sync')();
 const { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db } = require('../databases/mysql.ts')
 
 // Variables de entorno ------------------------------------------------------------------------------------------------------------
@@ -30,9 +29,11 @@ const eleccion = (conTxt: boolean): Number => { // Elecciones de formatos
     if (conTxt) {
 
         console.log(`
+        ╔═══════════════╗
             1. JSON
             2. TXT
             3. MYSQL
+        ╚═══════════════╝
             `);
 
         let formatoIntroduccionDeDatos = Number(prompt(`Formato a guardar: `));
@@ -43,8 +44,10 @@ const eleccion = (conTxt: boolean): Number => { // Elecciones de formatos
         return formatoIntroduccionDeDatos;
     } else {
         console.log(`
+        ╔═══════════════╗
             1. JSON
             2. MYSQL
+        ╚═══════════════╝
             `);
 
         let formatoIntroduccionDeDatos = Number(prompt(`Formato a guardar: `));
@@ -57,7 +60,7 @@ const eleccion = (conTxt: boolean): Number => { // Elecciones de formatos
 }
 
 // MÉTODOS PRINCIPALES---------------------------------------------------------------------------------------------------------------------
-const addMonstruo = async () => {
+const addMonstruo = async () => { // Añadir nuevo monstruo
 
     limpiar()
     let nombre = prompt('Introduce el nombre del mostruo: ').toUpperCase();
@@ -114,7 +117,7 @@ const addMonstruo = async () => {
 
 }
 
-const editarMonstruo = async () => {
+const editarMonstruo = async () => { // Editar monstruo
 
     limpiar()
 
@@ -165,7 +168,7 @@ const editarMonstruo = async () => {
 
 }
 
-const listarMonstruos = async () => {
+const listarMonstruos = async () => { // Listar monstruos
 
     switch (eleccion(true)) {
         case 1: {
@@ -173,11 +176,11 @@ const listarMonstruos = async () => {
             console.log(`
             ╔═════════════════════════════════╗
                1. Nombre                     
-               2. tipo                       
+               2. Tipo                       
                3. Fuerza                     
                4. Vida                       
                5. Defensa                    
-               6. All                        
+               6. Todos los datos                        
             ╚═════════════════════════════════╝
             `)
 
@@ -229,7 +232,7 @@ const listarMonstruos = async () => {
     }
 }
 
-const borrarMonstruo = async () => {
+const borrarMonstruo = async () => { // Borrar monstruo
 
     switch (eleccion(false)) {
         case 1: {
@@ -275,7 +278,7 @@ const borrarMonstruo = async () => {
 
 }
 
-const salir = async () => {
+const salir = async () => { // Salir del programa
 
     limpiar()
     console.log(`Saliendo del programa en...`)
