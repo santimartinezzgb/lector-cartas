@@ -52,6 +52,7 @@ const listarMonstruo_sql_db = async (
 
     console.clear()
     console.log('=========Lista de monstruos en MySQL=========');
+
     try {
 
         const connection = await mysql.createConnection({
@@ -67,18 +68,18 @@ const listarMonstruo_sql_db = async (
         if (bool == true) {
             rows.forEach((Monstruo: Monstruo, index: string) => {
                 console.log(`
-                    | ${index + 1}. ${Monstruo.nombre} 
-                    | Tipo: ${Monstruo.tipo} 
-                    |   Fuerza: ${Monstruo.fuerza} 
-                    |   Vida: ${Monstruo.vida} 
-                    |   Defensa: ${Monstruo.defensa}
-                    |________________________________________`);
+            | ${index + 1}. ${Monstruo.nombre} 
+            | Tipo: ${Monstruo.tipo} 
+            |   Fuerza: ${Monstruo.fuerza} 
+            |   Vida: ${Monstruo.vida} 
+            |   Defensa: ${Monstruo.defensa}
+            |________________________________________`);
             });
         } else {
             rows.forEach((Monstruo: Monstruo, index: string) => {
                 console.log(`
-                    | ${index + 1}. ${Monstruo.nombre}
-                    |________________________________________`);
+            | ${index + 1}. ${Monstruo.nombre}
+            |________________________________________`);
             });
         }
 
