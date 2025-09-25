@@ -1,7 +1,6 @@
 // Importaciones--------------------------------------------------------------------------------------------------------------------
 const fs = require('fs');
 const prompt = require('prompt-sync')();
-const mongoose = require('mongoose');
 require('dotenv').config()
 const { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db } = require('../databases/db-mysql.ts');
 const { Monstruo } = require('./clases.ts');
