@@ -1,14 +1,28 @@
 // Importaciones--------------------------------------------------------------------------------------------------------------------
 const fs = require('fs');
 const prompt = require('prompt-sync')();
+const mongoose = require('mongoose');
 require('dotenv').config()
 const { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db } = require('../databases/db-mysql.ts');
 const { Monstruo } = require('./clases.ts');
+const { addMonstruo_mongo, listarMonstruo_mongo, borrarMonstruo_mongo } = require("../databases/db-mongodb.ts")
 
 
 // Variables de entorno ------------------------------------------------------------------------------------------------------------
 const nombreUsuario = process.env.MYSQL_USER;       // Variables de MySQL 
 const nombrePassword = process.env.MYSQL_PASSWORD;
+
+const userMongo = process.env.MONGO_USER;           // Variables de Mongo
+const userPassword = process.env.MONGO_PASSWORD;
+
+// Conexiones ----------------------------------------------------------------------------------------------------------------------
+async function conexionMongo() {
+
+    await mongoose.connect(`mongodb+srv://${userMongo}:${userPassword}@cluster0.fgumghx.mongodb.net/Monstruos`)
+        .then(console.log('Conexión con MongoDB establecida con éxito!'))
+        .catch((err: Error) => console.log('Se ha producido un error en el intento de conexión: ', err))
+}
+conexionMongo();
 
 
 // Lecturas de bases de datos JSON y txt -------------------------------------------------------------------------------------------
@@ -19,7 +33,7 @@ let datosTxt = fs.readFileSync(`./databases/datos.txt`, `utf8`).split(`\n`).filt
 // Métodos auxiliares --------------------------------------------------------------------------------------------------------------
 const limpiar = async () => { console.clear() } // Método para limpiar terminal
 
-const atributo = async (atr: string) => { // Control de datos para atributos
+const atributo = (atr: string) => { // Control de datos para atributos
     let puntuacion = Number(prompt(`Indroduce su ${atr} (1-99): `))
     while (puntuacion > 99 || puntuacion < 1 || isNaN(puntuacion) == true) {
         puntuacion = Number(prompt(`Indroduce puntuación válida (1-99): `))
@@ -36,12 +50,13 @@ const eleccion = (conTxt: boolean): Number => { // Elecciones de formatos
             1. JSON
             2. TXT
             3. MYSQL
+            4. MongoDB
         ╚═══════════════╝
             `);
 
         let formatoIntroduccionDeDatos = Number(prompt(`Formato: `));
 
-        while (formatoIntroduccionDeDatos < 1 || formatoIntroduccionDeDatos > 3 || isNaN(formatoIntroduccionDeDatos) == true) {
+        while (formatoIntroduccionDeDatos < 1 || formatoIntroduccionDeDatos > 4 || isNaN(formatoIntroduccionDeDatos) == true) {
             formatoIntroduccionDeDatos = Number(prompt(`Selecciona formato válido a guardar: `))
         }
         return formatoIntroduccionDeDatos;
@@ -86,9 +101,9 @@ const addMonstruo = async () => { // Añadir nuevo monstruo
     }
 
     const tipo = prompt(`Introduce el tipo de ${nombre}: `).toUpperCase()
-    const fuerza = atributo(`fuerza`);
-    const vida = atributo(`vida`);
-    const defensa = atributo(`defensa`);
+    let fuerza = atributo(`fuerza`);
+    let vida = atributo(`vida`);
+    let defensa = atributo(`defensa`);
 
     let nuevoMostruo = new Monstruo(nombre, tipo, fuerza, vida, defensa);
 
@@ -96,7 +111,7 @@ const addMonstruo = async () => { // Añadir nuevo monstruo
         case 1: {
             // Paso de datos a la base de datos JSON
             await datosJSON.push(nuevoMostruo);
-            fs.writeFileSync(`./databases/datos.json`, JSON.stringify(datosJSON, null, 2));
+            await fs.writeFileSync(`./databases/datos.json`, JSON.stringify(datosJSON, null, 2));
 
             limpiar()
 
@@ -104,7 +119,7 @@ const addMonstruo = async () => { // Añadir nuevo monstruo
         } break;
         case 2: {
             const nuevoMonstruoFormateadoTxt = [
-                `Héroe: ` + nuevoMostruo.nombre,
+                `Monstruo: ` + nuevoMostruo.nombre,
                 `\ntipo: ` + nuevoMostruo.tipo,
                 `\nFuerza: ` + nuevoMostruo.fuerza,
                 `\nVida: ` + nuevoMostruo.vida,
@@ -120,8 +135,11 @@ const addMonstruo = async () => { // Añadir nuevo monstruo
 
             console.log(`${nuevoMostruo.nombre} añadido a la DB en txt`)
         } case 3: {
-
             await addMonstruo_sql_db(nombre, tipo, fuerza, vida, defensa, nombreUsuario, nombrePassword)
+        } break;
+        case 4: {
+
+            await addMonstruo_mongo(nombre, tipo, fuerza, vida, defensa)
         } break;
     }
 
@@ -237,14 +255,18 @@ const listarMonstruos = async () => { // Listar monstruos
         } break;
         case 3: {
             limpiar();
-            await listarMonstruo_sql_db(nombreUsuario, nombrePassword, true);
+            await listarMonstruo_sql_db(true);
+        } break;
+        case 4: {
+            limpiar()
+            await listarMonstruo_mongo(true)
         } break;
     }
 }
 
 const borrarMonstruo = async () => { // Borrar monstruo
 
-    switch (eleccion(false)) {
+    switch (eleccion(true)) {
         case 1: {
             if (datosJSON.length > 0) {
 
@@ -278,7 +300,13 @@ const borrarMonstruo = async () => { // Borrar monstruo
         case 2: {
             const nombre_a_eliminar = prompt('Introduce el nombre del monstruo a eliminar: ').toUpperCase();
             await borrarMonstruo_sql_db(nombreUsuario, nombrePassword, nombre_a_eliminar)
-        }
+        } case 4: {
+            limpiar();
+            await listarMonstruo_mongo(false)
+
+            const eleccion_para_borrar = prompt('Selecciona un monstruo de la lista (por nombre): ').toUpperCase().trim();
+            await borrarMonstruo_mongo(eleccion_para_borrar);
+        } break;
     }
 
 }
