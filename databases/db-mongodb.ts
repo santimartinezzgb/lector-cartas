@@ -60,4 +60,51 @@ async function borrarMonstruo_mongo(eliminado: string) {
     }
 }
 
-module.exports = { addMonstruo_mongo, listarMonstruo_mongo, borrarMonstruo_mongo }
+async function editarMonstruo_mongo(monstruoEdit: string, atributo: number, datoEditado: string) {
+
+    const cartas = await modelo.find();
+    switch (atributo) {
+        case 1: {
+            for (let i = 0; i < cartas.length; i++) {
+                await modelo.updateOne(
+                    { nombre: `${monstruoEdit}` },
+                    { $set: { atributo: datoEditado } })
+                    .then(console.log(`${monstruoEdit} ha sido modificado`))
+            }
+        } break;
+        case 2: {
+            for (let i = 0; i < cartas.length; i++) {
+                await modelo.updateOne(
+                    { nombre: `${monstruoEdit}` },
+                    { $set: { atributo: datoEditado } })
+                    .then(console.log(`${monstruoEdit} ha sido modificado`))
+            }
+        } break;
+        case 3: {
+            for (let i = 0; i < cartas.length; i++) {
+                await modelo.updateOne(
+                    { nombre: `${monstruoEdit}` },
+                    { $set: { atributo: datoEditado } })
+                    .then(console.log(`${monstruoEdit} ha sido modificado`))
+            }
+        } break;
+        case 4: {
+            for (let i = 0; i < cartas.length; i++) {
+                await modelo.updateOne(
+                    { nombre: `${monstruoEdit}` },
+                    { $set: { atributo: datoEditado } })
+                    .then(console.log(`${monstruoEdit} ha sido modificado`))
+            }
+        } break;
+        case 5: {
+            for (let i = 0; i < cartas.length; i++) {
+                await modelo.updateOne(
+                    { nombre: `${monstruoEdit}` },
+                    { $set: { atributo: datoEditado } })
+                    .then(console.log(`${monstruoEdit} ha sido modificado`))
+            }
+        } break;
+    }
+}
+
+module.exports = { addMonstruo_mongo, listarMonstruo_mongo, borrarMonstruo_mongo, editarMonstruo_mongo }

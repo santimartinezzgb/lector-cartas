@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 require('dotenv').config()
 const { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db } = require('../databases/db-mysql.ts');
 const { Monstruo } = require('./clases.ts');
-const { addMonstruo_mongo, listarMonstruo_mongo, borrarMonstruo_mongo } = require("../databases/db-mongodb.ts")
+const { addMonstruo_mongo, listarMonstruo_mongo, borrarMonstruo_mongo, editarMonstruo_mongo } = require("../databases/db-mongodb.ts");
 
 
 // Variables de entorno ------------------------------------------------------------------------------------------------------------
@@ -80,7 +80,10 @@ const salida = async (numero: number, tiempo: number) => {
     setTimeout(() => {
         limpiar()
         console.log(`Saliendo del programa en...`)
-        console.log(`       -- ${numero} --`)
+        console.log(`
+        =======
+        == ${numero} ==
+        =======`)
     }, tiempo)
 }
 
@@ -149,22 +152,24 @@ const editarMonstruo = async () => { // Editar monstruo
 
     limpiar()
 
-    console.log(`MONSTRUOS`)
+    switch (eleccion(true)) {
+        case 1: {
+            console.log(`MONSTRUOS`)
 
-    await datosJSON.forEach((Monstruo: { nombre: string; }, index: number) => {
-        console.log(`${index + 1}. ${Monstruo.nombre}`)
-    });
+            await datosJSON.forEach((Monstruo: { nombre: string; }, index: number) => {
+                console.log(`${index + 1}. ${Monstruo.nombre}`)
+            });
 
-    let seleccionMonstruo = Number(prompt(`Selecciona un monstruo para editar: `));
+            let seleccionMonstruo = Number(prompt(`Selecciona un monstruo para editar: `));
 
-    while (seleccionMonstruo < 1 || seleccionMonstruo > datosJSON.length || isNaN(seleccionMonstruo) == true) {
-        seleccionMonstruo = Number(prompt(`Selecciona un monstruo válido para editar: `))
-    }
-    const elegido = datosJSON[seleccionMonstruo - 1]
+            while (seleccionMonstruo < 1 || seleccionMonstruo > datosJSON.length || isNaN(seleccionMonstruo) == true) {
+                seleccionMonstruo = Number(prompt(`Selecciona un monstruo válido para editar: `))
+            }
+            const elegido = datosJSON[seleccionMonstruo - 1]
 
-    limpiar()
+            limpiar()
 
-    console.log(`
+            console.log(`
         ╔═════════════════════════════════╗
            Atributos de ${elegido.nombre}
            1. nombre                     
@@ -175,25 +180,46 @@ const editarMonstruo = async () => { // Editar monstruo
         ╚═════════════════════════════════╝
         `)
 
-    let seleccionAtributo = Number(prompt(`Selecciona atributo a editar: `))
+            let seleccionAtributo = Number(prompt(`Selecciona atributo a editar: `))
 
-    while (seleccionAtributo < 1 || seleccionAtributo > 5 || isNaN(seleccionAtributo) == true) {
-        seleccionAtributo = Number(prompt(`Selecciona atributo válido a editar: `))
+            while (seleccionAtributo < 1 || seleccionAtributo > 5 || isNaN(seleccionAtributo) == true) {
+                seleccionAtributo = Number(prompt(`Selecciona atributo válido a editar: `))
+            }
+
+            switch (seleccionAtributo) {
+
+                case 1: elegido.nombre = prompt(`Nuevo nombre: `); break;
+                case 2: elegido.tipo = prompt(`Nuevo tipo: `); break;
+                case 3: elegido.fuerza = Number(prompt(`Nueva estadística de fuerza: `)); break;
+                case 4: elegido.vida = Number(prompt(`Nuevo estadística de vida: `)); break;
+                case 5: elegido.defensa = Number(prompt(`Nuevo estadística de defensa: `)); break;
+            }
+
+            limpiar()
+
+            console.log(`Monstruo actualizado con éxito`)
+        } break;
+        case 4: {
+            await listarMonstruo_mongo(false)
+            const eleccion = prompt('Selecciona monstruo a editar: ');
+            console.log(`
+        ╔═════════════════════════════════╗
+           Atributos de ${eleccion.nombre}
+           1. nombre                     
+           2. tipo                       
+           3. fuerza                     
+           4. vida                       
+           5. defensa                    
+        ╚═════════════════════════════════╝
+        `)
+            let atributo = Number(prompt('Selecciona atributo a editar (por su orden): '));
+            while (atributo < 1 || atributo > 5 || isNaN(atributo) == true) {
+                atributo = Number(prompt(`Selecciona atributo válido a editar: `))
+            }
+            const datoEditado = prompt('Selecciona nuevo valor: ')
+            await editarMonstruo_mongo(eleccion, atributo, datoEditado);
+        } break;
     }
-
-    switch (seleccionAtributo) {
-
-        case 1: elegido.nombre = prompt(`Nuevo nombre: `); break;
-        case 2: elegido.tipo = prompt(`Nuevo tipo: `); break;
-        case 3: elegido.fuerza = Number(prompt(`Nueva estadística de fuerza: `)); break;
-        case 4: elegido.vida = Number(prompt(`Nuevo estadística de vida: `)); break;
-        case 5: elegido.defensa = Number(prompt(`Nuevo estadística de defensa: `)); break;
-    }
-
-    limpiar()
-
-    console.log(`Monstruo actualizado con éxito`)
-
 }
 
 const listarMonstruos = async () => { // Listar monstruos
