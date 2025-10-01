@@ -68,7 +68,7 @@ async function editarMonstruo_mongo(monstruoEdit: string, atributo: number, dato
             for (let i = 0; i < cartas.length; i++) {
                 await modelo.updateOne(
                     { nombre: `${monstruoEdit}` },
-                    { $set: { atributo: datoEditado } })
+                    { $set: { nombre: datoEditado } })
                     .then(console.log(`${monstruoEdit} ha sido modificado`))
             }
         } break;
@@ -76,7 +76,7 @@ async function editarMonstruo_mongo(monstruoEdit: string, atributo: number, dato
             for (let i = 0; i < cartas.length; i++) {
                 await modelo.updateOne(
                     { nombre: `${monstruoEdit}` },
-                    { $set: { atributo: datoEditado } })
+                    { $set: { tipo: datoEditado } })
                     .then(console.log(`${monstruoEdit} ha sido modificado`))
             }
         } break;
@@ -84,7 +84,7 @@ async function editarMonstruo_mongo(monstruoEdit: string, atributo: number, dato
             for (let i = 0; i < cartas.length; i++) {
                 await modelo.updateOne(
                     { nombre: `${monstruoEdit}` },
-                    { $set: { atributo: datoEditado } })
+                    { $set: { fuerza: datoEditado } })
                     .then(console.log(`${monstruoEdit} ha sido modificado`))
             }
         } break;
@@ -92,7 +92,7 @@ async function editarMonstruo_mongo(monstruoEdit: string, atributo: number, dato
             for (let i = 0; i < cartas.length; i++) {
                 await modelo.updateOne(
                     { nombre: `${monstruoEdit}` },
-                    { $set: { atributo: datoEditado } })
+                    { $set: { vida: datoEditado } })
                     .then(console.log(`${monstruoEdit} ha sido modificado`))
             }
         } break;
@@ -100,7 +100,7 @@ async function editarMonstruo_mongo(monstruoEdit: string, atributo: number, dato
             for (let i = 0; i < cartas.length; i++) {
                 await modelo.updateOne(
                     { nombre: `${monstruoEdit}` },
-                    { $set: { atributo: datoEditado } })
+                    { $set: { defensa: datoEditado } })
                     .then(console.log(`${monstruoEdit} ha sido modificado`))
             }
         } break;

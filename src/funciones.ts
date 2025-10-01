@@ -12,8 +12,8 @@ const { addMonstruo_mongo, listarMonstruo_mongo, borrarMonstruo_mongo, editarMon
 const nombreUsuario = process.env.MYSQL_USER;       // Variables de MySQL 
 const nombrePassword = process.env.MYSQL_PASSWORD;
 
-const userMongo = process.env.MONGO_USER;           // Variables de Mongo
-const userPassword = process.env.MONGO_PASSWORD;
+const userMongo = process.env.MONGO_CLUSTER_NAME;           // Variables de Mongo
+const userPassword = process.env.MONGO_CLUSTER_PASSWORD;
 
 // Conexiones ----------------------------------------------------------------------------------------------------------------------
 async function conexionMongo() {
@@ -170,15 +170,15 @@ const editarMonstruo = async () => { // Editar monstruo
             limpiar()
 
             console.log(`
-        ╔═════════════════════════════════╗
-           Atributos de ${elegido.nombre}
-           1. nombre                     
-           2. tipo                       
-           3. fuerza                     
-           4. vida                       
-           5. defensa                    
-        ╚═════════════════════════════════╝
-        `)
+            ╔═════════════════════════════════╗
+            Atributos de ${elegido.nombre}
+            1. nombre                     
+            2. tipo                       
+            3. fuerza                     
+            4. vida                       
+            5. defensa                    
+            ╚═════════════════════════════════╝
+            `)
 
             let seleccionAtributo = Number(prompt(`Selecciona atributo a editar: `))
 
@@ -201,21 +201,23 @@ const editarMonstruo = async () => { // Editar monstruo
         } break;
         case 4: {
             await listarMonstruo_mongo(false)
-            const eleccion = prompt('Selecciona monstruo a editar: ');
+            const eleccion = prompt('Selecciona monstruo a editar (por su nombre): ');
             console.log(`
-        ╔═════════════════════════════════╗
-           Atributos de ${eleccion.nombre}
-           1. nombre                     
-           2. tipo                       
-           3. fuerza                     
-           4. vida                       
-           5. defensa                    
-        ╚═════════════════════════════════╝
-        `)
+            ╔═════════════════════════════════╗
+            Atributos de ${eleccion.nombre}
+            1. nombre                     
+            2. tipo                       
+            3. fuerza                     
+            4. vida                       
+            5. defensa                    
+            ╚═════════════════════════════════╝
+            `)
             let atributo = Number(prompt('Selecciona atributo a editar (por su orden): '));
+
             while (atributo < 1 || atributo > 5 || isNaN(atributo) == true) {
                 atributo = Number(prompt(`Selecciona atributo válido a editar: `))
             }
+
             const datoEditado = prompt('Selecciona nuevo valor: ')
             await editarMonstruo_mongo(eleccion, atributo, datoEditado);
         } break;
