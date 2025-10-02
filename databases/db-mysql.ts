@@ -1,5 +1,6 @@
 const mysql = require('mysql2/promise');
-const { Monstruo } = require('../src/clases.ts')
+const { Monstruo } = require('../src/clases.ts');
+const prompt = require('prompt-sync')();
 
 type Monstruo = {
     nombre: string,
@@ -64,21 +65,20 @@ const listarMonstruo_sql_db = async (
         const [rows] = await connection.execute(`select * from cartas`);
         await connection.end();
 
-        if (bool == true) {
-            rows.forEach((Monstruo: Monstruo) => {
-                console.log(`
-    | Nombre: ${Monstruo.nombre} 
-    | Tipo: ${Monstruo.tipo} 
-    |   Fuerza: ${Monstruo.fuerza} 
-    |   Vida: ${Monstruo.vida} 
-    |   Defensa: ${Monstruo.defensa}
-    |`);
-            });
+
+        if (rows.length == 0) {
+            console.log('La lista está vacía');
+
         } else {
+            if (bool == true) {
 
-            if (rows.length == 0) {
-                console.log('La lista está vacía');
-
+                rows.forEach((Monstruo: Monstruo) => {
+                    console.log(`Nombre: ${Monstruo.nombre}`);
+                    console.log(`Tipo: ${Monstruo.tipo} `)
+                    console.log(`Fuerza: ${Monstruo.fuerza}`)
+                    console.log(`Vida: ${Monstruo.vida}`)
+                    console.log(`Defensa: ${Monstruo.defensa}`);
+                });
             } else {
                 rows.forEach((Monstruo: Monstruo, index: string) => {
                     console.log(`${index + 1}. ${Monstruo.nombre}`);
@@ -97,8 +97,7 @@ const listarMonstruo_sql_db = async (
 // Método que borra un monstruo de la base de datos de MySQL workbench
 const borrarMonstruo_sql_db = async (
     usuarioMYSQL: string,
-    passwordMYSQL: string,
-    nombre_a_eliminar: string) => {
+    passwordMYSQL: string) => {
 
 
     try {
@@ -109,8 +108,28 @@ const borrarMonstruo_sql_db = async (
             database: 'Monstruos'
         });
 
-        await connection.execute(`delete from cartas where nombre="${nombre_a_eliminar}"`);
-        await connection.end();
+        // Muestra la lista por nombres
+        const [rows] = await connection.execute(`select * from cartas`);
+        rows.forEach((Monstruo: Monstruo, index: string) => {
+            console.log(`${index + 1}. ${Monstruo.nombre}`);
+        });
+
+        // Si la lista está vacía, avisa
+        if (rows.length == 0) {
+            console.log('La lista está vacía');
+
+            // Si no está vacía, da opción de elegir cual eliminar
+        } else {
+            let eleccion_para_borrar = prompt('Introduce el nombre del monstruo a eliminar: ');
+
+            // Se le añaden los métodos a parte con el símbolo ?, que provoca en el código que
+            // en caso de ser null, esos métodos no se ejecutan. Así se evita el error de 
+            // objeto posiblemente null
+            eleccion_para_borrar?.toUpperCase().trim();
+
+            await connection.execute(`delete from cartas where nombre="${eleccion_para_borrar}"`);
+            await connection.end();
+        }
 
     } catch (error) {
         console.error('Error al conectar a MySQL:', error);

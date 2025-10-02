@@ -143,7 +143,7 @@ const addMonstruo = async () => { // Añadir nuevo monstruo
             await addMonstruo_sql_db(nombre, tipo, fuerza, vida, defensa, userMySQL, passwordMySQL)
         } break;
         case 4: {
-
+            limpiar();
             await addMonstruo_mongo(nombre, tipo, fuerza, vida, defensa)
         } break;
     }
@@ -191,8 +191,8 @@ const editarMonstruo = async () => { // Editar monstruo
             limpiar();
             switch (seleccionAtributo) {
 
-                case 1: elegido.nombre = prompt(`Nuevo nombre: `); break;
-                case 2: elegido.tipo = prompt(`Nuevo tipo: `); break;
+                case 1: elegido.nombre = prompt(`Nuevo nombre: `).toUpperCase(); break;
+                case 2: elegido.tipo = prompt(`Nuevo tipo: `).toUpperCase(); break;
                 case 3: elegido.fuerza = Number(prompt(`Nueva estadística de fuerza: `)); break;
                 case 4: elegido.vida = Number(prompt(`Nuevo estadística de vida: `)); break;
                 case 5: elegido.defensa = Number(prompt(`Nuevo estadística de defensa: `)); break;
@@ -234,7 +234,7 @@ const editarMonstruo = async () => { // Editar monstruo
         } break;
         case 4: {
             await listarMonstruo_mongo(false)
-            const eleccion = prompt('Selecciona monstruo a editar (por su nombre): ');
+            const eleccion = prompt('Selecciona monstruo a editar (por su nombre): ').toUpperCase().trim();
             console.log(`
             ╔═════════════════════════════════╗
             Atributos de ${eleccion.nombre}
@@ -250,8 +250,9 @@ const editarMonstruo = async () => { // Editar monstruo
             while (atributo < 1 || atributo > 5 || isNaN(atributo) == true) {
                 atributo = Number(prompt(`Selecciona atributo válido a editar: `))
             }
+            limpiar()
+            const datoEditado = prompt('Selecciona nuevo valor: ');
 
-            const datoEditado = prompt('Selecciona nuevo valor: ')
             await editarMonstruo_mongo(eleccion, atributo, datoEditado);
         } break;
     }
@@ -316,7 +317,16 @@ const listarMonstruos = async () => { // Listar monstruos
         } break;
         case 3: {
             limpiar();
-            await listarMonstruo_sql_db(userMySQL, passwordMySQL, true);
+
+            console.log(`
+                1. Todos los datos
+                2. Nombre`);
+            let eleccion = Number(prompt('Selecciona opción por su orden: '));
+
+            (eleccion == 1) ?
+                await listarMonstruo_sql_db(userMySQL, passwordMySQL, true) :
+                await listarMonstruo_sql_db(userMySQL, passwordMySQL, false);
+
         } break;
         case 4: {
             limpiar()
@@ -363,16 +373,13 @@ const borrarMonstruo = async () => { // Borrar monstruo
         } break;
         case 3: {
             limpiar();
-            await listarMonstruo_sql_db(userMySQL, passwordMySQL, false);
 
-            const nombre_a_eliminar = prompt('Introduce el nombre del monstruo a eliminar: ').toUpperCase().trim();
-            await borrarMonstruo_sql_db(userMySQL, passwordMySQL, nombre_a_eliminar);
+            await borrarMonstruo_sql_db(userMySQL, passwordMySQL);
 
         } break;
         case 4: {
             limpiar();
             await listarMonstruo_mongo(false)
-
 
             const eleccion_para_borrar = prompt('Introduce el nombre del monstruo a eliminar: ').toUpperCase().trim();
             await borrarMonstruo_mongo(eleccion_para_borrar);
