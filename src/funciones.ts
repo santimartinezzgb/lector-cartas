@@ -1,16 +1,18 @@
+import React = require("react");
+
 // Importaciones--------------------------------------------------------------------------------------------------------------------
 const fs = require('fs');
 const prompt = require('prompt-sync')();
 const mongoose = require('mongoose');
 require('dotenv').config()
-const { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db } = require('../databases/db-mysql.ts');
+const { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db, editarMonstruo_sql_db } = require('../databases/db-mysql.ts');
 const { Monstruo } = require('./clases.ts');
 const { addMonstruo_mongo, listarMonstruo_mongo, borrarMonstruo_mongo, editarMonstruo_mongo } = require("../databases/db-mongodb.ts");
 
 
 // Variables de entorno ------------------------------------------------------------------------------------------------------------
-const nombreUsuario = process.env.MYSQL_USER;       // Variables de MySQL 
-const nombrePassword = process.env.MYSQL_PASSWORD;
+const userMySQL = process.env.MYSQL_USER;       // Variables de MySQL 
+const passwordMySQL = process.env.MYSQL_PASSWORD;
 
 const userMongo = process.env.MONGO_CLUSTER_NAME;           // Variables de Mongo
 const userPassword = process.env.MONGO_CLUSTER_PASSWORD;
@@ -138,7 +140,7 @@ const addMonstruo = async () => { // Añadir nuevo monstruo
 
             console.log(`${nuevoMostruo.nombre} añadido a la DB en txt`)
         } case 3: {
-            await addMonstruo_sql_db(nombre, tipo, fuerza, vida, defensa, nombreUsuario, nombrePassword)
+            await addMonstruo_sql_db(nombre, tipo, fuerza, vida, defensa, userMySQL, passwordMySQL)
         } break;
         case 4: {
 
@@ -186,6 +188,7 @@ const editarMonstruo = async () => { // Editar monstruo
                 seleccionAtributo = Number(prompt(`Selecciona atributo válido a editar: `))
             }
 
+            limpiar();
             switch (seleccionAtributo) {
 
                 case 1: elegido.nombre = prompt(`Nuevo nombre: `); break;
@@ -198,6 +201,36 @@ const editarMonstruo = async () => { // Editar monstruo
             limpiar()
 
             console.log(`Monstruo actualizado con éxito`)
+        } break;
+        case 2: {
+            limpiar();
+            console.log('El programa no permite modificaciones en archivos .txt...')
+        } break;
+        case 3: {
+            await listarMonstruo_sql_db(userMySQL, passwordMySQL, false);
+
+            const filtro = prompt('Selecciona Monstruo a cambiar (por su nombre): ').toUpperCase();
+
+            console.log(`
+                ╔═════════════════════════════════╗
+                Atributos de ${filtro}
+                1. nombre                     
+                2. tipo                       
+                3. fuerza                     
+                4. vida                       
+                5. defensa                    
+                ╚═════════════════════════════════╝
+                `)
+
+            let eleccion = Number(prompt('Selecciona atributo a modificar: '));
+
+            while (eleccion < 1 || eleccion > 5 || isNaN(eleccion) == true) {
+                eleccion = Number(prompt(`Selecciona atributo válido a editar: `))
+            }
+            const nuevo_dato = prompt('Introduce nuevo dato: ');
+
+            await editarMonstruo_sql_db(userMySQL, passwordMySQL, eleccion, nuevo_dato, filtro);
+
         } break;
         case 4: {
             await listarMonstruo_mongo(false)
@@ -283,7 +316,7 @@ const listarMonstruos = async () => { // Listar monstruos
         } break;
         case 3: {
             limpiar();
-            await listarMonstruo_sql_db(true);
+            await listarMonstruo_sql_db(userMySQL, passwordMySQL, true);
         } break;
         case 4: {
             limpiar()
@@ -326,14 +359,25 @@ const borrarMonstruo = async () => { // Borrar monstruo
             }
         } break;
         case 2: {
-            const nombre_a_eliminar = prompt('Introduce el nombre del monstruo a eliminar: ').toUpperCase();
-            await borrarMonstruo_sql_db(nombreUsuario, nombrePassword, nombre_a_eliminar)
-        } case 4: {
+            console.log('La eliminación de datos en .txt no está disponible...')
+        } break;
+        case 3: {
+            limpiar();
+            await listarMonstruo_sql_db(userMySQL, passwordMySQL, false);
+
+            const nombre_a_eliminar = prompt('Introduce el nombre del monstruo a eliminar: ').toUpperCase().trim();
+            await borrarMonstruo_sql_db(userMySQL, passwordMySQL, nombre_a_eliminar);
+
+        } break;
+        case 4: {
             limpiar();
             await listarMonstruo_mongo(false)
 
-            const eleccion_para_borrar = prompt('Selecciona un monstruo de la lista (por nombre): ').toUpperCase().trim();
+
+            const eleccion_para_borrar = prompt('Introduce el nombre del monstruo a eliminar: ').toUpperCase().trim();
             await borrarMonstruo_mongo(eleccion_para_borrar);
+
+
         } break;
     }
 

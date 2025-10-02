@@ -4,3 +4,9 @@ Fuerza: 40
 Vida: 70
 Defensa: 90
 -------------------------------------------
+Monstruo: PRUEBATEXTO
+tipo: PRUEBATEXTO
+Fuerza: 1
+Vida: 1
+Defensa: 1
+-------------------------------------------

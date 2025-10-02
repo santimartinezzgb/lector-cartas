@@ -34,7 +34,7 @@ async function main() {
                 await editarMonstruo()
             } break;
             case 3: {
-                await listarMonstruos()
+                await listarMonstruos();
             } break;
             case 4: {
                 await borrarMonstruo()

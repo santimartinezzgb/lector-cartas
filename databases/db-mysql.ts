@@ -46,17 +46,16 @@ const addMonstruo_sql_db = async (
 
 // Método que lista los monstruos de la base de datos de MySQL workbench
 const listarMonstruo_sql_db = async (
-    usuarioMYSQL: string,
-    passwordMYSQL: string,
+    usuarioMYSQL: any,
+    passwordMYSQL: any,
     bool: boolean) => {
 
-    console.clear()
-    console.log('=========Lista de monstruos en MySQL=========');
+    console.clear();
 
     try {
 
         const connection = await mysql.createConnection({
-            host: 'localhost',
+            host: '127.0.0.1',
             user: usuarioMYSQL,
             password: passwordMYSQL,
             database: 'Monstruos'
@@ -66,21 +65,25 @@ const listarMonstruo_sql_db = async (
         await connection.end();
 
         if (bool == true) {
-            rows.forEach((Monstruo: Monstruo, index: string) => {
+            rows.forEach((Monstruo: Monstruo) => {
                 console.log(`
-            | ${index + 1}. ${Monstruo.nombre} 
-            | Tipo: ${Monstruo.tipo} 
-            |   Fuerza: ${Monstruo.fuerza} 
-            |   Vida: ${Monstruo.vida} 
-            |   Defensa: ${Monstruo.defensa}
-            |________________________________________`);
+    | Nombre: ${Monstruo.nombre} 
+    | Tipo: ${Monstruo.tipo} 
+    |   Fuerza: ${Monstruo.fuerza} 
+    |   Vida: ${Monstruo.vida} 
+    |   Defensa: ${Monstruo.defensa}
+    |`);
             });
         } else {
-            rows.forEach((Monstruo: Monstruo, index: string) => {
-                console.log(`
-            | ${index + 1}. ${Monstruo.nombre}
-            |________________________________________`);
-            });
+
+            if (rows.length == 0) {
+                console.log('La lista está vacía');
+
+            } else {
+                rows.forEach((Monstruo: Monstruo, index: string) => {
+                    console.log(`${index + 1}. ${Monstruo.nombre}`);
+                });
+            }
         }
 
         return rows as Monstruo[];
@@ -97,8 +100,6 @@ const borrarMonstruo_sql_db = async (
     passwordMYSQL: string,
     nombre_a_eliminar: string) => {
 
-    console.clear()
-    console.log(`${nombre_a_eliminar} eliminado de la DB en MySQL`);
 
     try {
         const connection = await mysql.createConnection({
@@ -117,4 +118,58 @@ const borrarMonstruo_sql_db = async (
 }
 
 
-module.exports = { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db }
+const editarMonstruo_sql_db = async (
+    usuarioMYSQL: string,
+    passwordMYSQL: string,
+    eleccion: number,
+    nuevo_dato: string,
+    filtro: string) => {
+
+    console.clear();
+    try {
+        const connection = await mysql.createConnection({
+            host: 'localhost',
+            user: usuarioMYSQL,
+            password: passwordMYSQL,
+            database: 'Monstruos'
+        });
+
+        switch (eleccion) {
+            case 1: {
+                await connection.execute(
+                    `UPDATE cartas SET nombre = "${nuevo_dato.toUpperCase()}" WHERE nombre = "${filtro}"`
+                );
+            } break;
+            case 2: {
+                await connection.execute(
+                    `UPDATE cartas SET tipo = "${nuevo_dato.toUpperCase()}" WHERE nombre = "${filtro}"`
+                );
+            } break;
+            case 3: {
+                await connection.execute(
+                    `UPDATE cartas SET fuerza = "${nuevo_dato}" WHERE nombre = "${filtro}"`
+                );
+            } break;
+            case 4: {
+                await connection.execute(
+                    `UPDATE cartas SET vida = "${nuevo_dato}" WHERE nombre = "${filtro}"`
+                );
+            } break;
+            case 5: {
+                await connection.execute(
+                    `UPDATE cartas SET defensa = "${nuevo_dato}" WHERE nombre = "${filtro}"`
+                );
+            } break;
+        }
+
+
+        await connection.end();
+
+    } catch (error) {
+        console.error('Error al conectar a MySQL:', error);
+    }
+
+}
+
+
+module.exports = { addMonstruo_sql_db, listarMonstruo_sql_db, borrarMonstruo_sql_db, editarMonstruo_sql_db }
