@@ -369,11 +369,14 @@ const borrarMonstruo = async () => { // Borrar monstruo
             }
         } break;
         case 2: {
-            console.log('La eliminación de datos en .txt no está disponible...')
+
+            limpiar()
+            console.log('La eliminación de datos en .txt no está disponible...');
+
         } break;
         case 3: {
-            limpiar();
 
+            limpiar();
             await borrarMonstruo_sql_db(userMySQL, passwordMySQL);
 
         } break;
