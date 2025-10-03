@@ -28,7 +28,7 @@ Programa CRUD en TypeScript para gestionar una lista de monstruos. Puedes añadi
 1. **Clona el repositorio**
 
 ```bash
-git clone https://github.com/tu-usuario/lector-cartas.git
+git clone https://github.com/santimartinezzgb/lector-cartas.git
 cd lector-cartas
 pnpm install
 ```
